@@ -1,0 +1,640 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>DialogCreateRealEstate</class>
+ <widget class="QDialog" name="DialogCreateRealEstate">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>396</width>
+    <height>722</height>
+   </rect>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>16777209</width>
+    <height>16777215</height>
+   </size>
+  </property>
+  <property name="windowTitle">
+   <string>Dialog</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">QRadioButton {
+  background-color: rgb(240, 242, 246);
+  color: rgb(90, 93, 97);
+  border: 2px solid #CED4DA;
+  padding: 4px 8px; /* Tạo khoảng đệm bên trong */
+  border-radius: 8px; /* Bo tròn góc */
+  text-align: center; /* Căn giữa chữ */
+  font-weight: 600;
+}
+
+QRadioButton::indicator {
+  width: 0px;
+  height: 0px;
+}
+
+QRadioButton:hover {
+  background-color: rgb(230, 231, 242);
+}
+
+QRadioButton:pressed {
+  background-color: #bbb;
+}
+
+QRadioButton:checked {
+  background-color: rgba(248, 249, 250, 1);
+  color: #007BFF;
+  border: 1px solid #007BFF;
+}
+
+QRadioButton:checked:hover {
+  background-color: #cce0ff; /* Màu nền khi được chọn và hover */
+}
+
+QRadioButton:checked:pressed {
+  background-color: #aaccee; /* Màu nền khi được chọn và pressed */
+}
+
+QLabel {
+color: rgb(90, 93, 97);
+border: none;
+font-weight: 600;
+font-size: 12px;
+}
+QLineEdit {
+border: 1px solid #CED4DA;
+padding: 2px 4px;
+border-radius: 8px;
+}
+QPlainTextEdit{
+  border: 1px solid #CED4DA;
+border-radius: 8px;
+}</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout_2">
+   <item>
+    <layout class="QVBoxLayout" name="verticalLayout">
+     <property name="bottomMargin">
+      <number>12</number>
+     </property>
+     <item>
+      <widget class="QWidget" name="images" native="true">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>200</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>200</height>
+        </size>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">border: 2px dashed #CED4DA;
+border-radius: 8px;</string>
+       </property>
+       <layout class="QHBoxLayout" name="horizontalLayout">
+        <property name="leftMargin">
+         <number>4</number>
+        </property>
+        <property name="topMargin">
+         <number>4</number>
+        </property>
+        <property name="rightMargin">
+         <number>4</number>
+        </property>
+        <property name="bottomMargin">
+         <number>0</number>
+        </property>
+        <item>
+         <widget class="QLabel" name="images_label">
+          <property name="styleSheet">
+           <string notr="true">
+  color: rgb(90, 93, 97);
+border: none;
+font-weight: 800;</string>
+          </property>
+          <property name="text">
+           <string>Kéo và thả hình ảnh ...</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignmentFlag::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </item>
+     <item>
+      <widget class="QWidget" name="location_info" native="true">
+       <layout class="QGridLayout" name="gridLayout_2">
+        <property name="leftMargin">
+         <number>4</number>
+        </property>
+        <property name="topMargin">
+         <number>4</number>
+        </property>
+        <property name="rightMargin">
+         <number>4</number>
+        </property>
+        <property name="bottomMargin">
+         <number>0</number>
+        </property>
+        <item row="2" column="0">
+         <layout class="QGridLayout" name="gridLayout">
+          <property name="leftMargin">
+           <number>4</number>
+          </property>
+          <property name="topMargin">
+           <number>4</number>
+          </property>
+          <property name="rightMargin">
+           <number>4</number>
+          </property>
+          <property name="bottomMargin">
+           <number>4</number>
+          </property>
+          <item row="0" column="2">
+           <widget class="QComboBox" name="location__districts">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
+            <property name="styleSheet">
+             <string notr="true"/>
+            </property>
+            <item>
+             <property name="text">
+              <string>Đà Lạt</string>
+             </property>
+            </item>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QComboBox" name="location__provices">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
+            <item>
+             <property name="text">
+              <string>Lâm Đồng</string>
+             </property>
+            </item>
+           </widget>
+          </item>
+          <item row="0" column="3">
+           <widget class="QComboBox" name="location__wards">
+            <item>
+             <property name="text">
+              <string>Phường 1</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Phường 2</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Phường 3</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Phường 4</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Phường 5</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Phường 6</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Phường 7</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Phường 8</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Phường 9</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Phường 10</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Phường 11</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Phường 12</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Xã Tà Nung</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Xã Trạm Hành</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Xã Xuân Trường</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Xã Xuân Thọ</string>
+             </property>
+            </item>
+           </widget>
+          </item>
+          <item row="2" column="1" colspan="3">
+           <layout class="QHBoxLayout" name="horizontalLayout_2">
+            <property name="leftMargin">
+             <number>4</number>
+            </property>
+            <property name="topMargin">
+             <number>4</number>
+            </property>
+            <property name="rightMargin">
+             <number>4</number>
+            </property>
+            <property name="bottomMargin">
+             <number>4</number>
+            </property>
+            <item>
+             <widget class="QLabel" name="location__street_label">
+              <property name="text">
+               <string>Tên đường</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLineEdit" name="location__street"/>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </widget>
+     </item>
+     <item>
+      <widget class="QWidget" name="basic_info" native="true">
+       <layout class="QHBoxLayout" name="horizontalLayout_4">
+        <property name="leftMargin">
+         <number>4</number>
+        </property>
+        <property name="topMargin">
+         <number>4</number>
+        </property>
+        <property name="rightMargin">
+         <number>4</number>
+        </property>
+        <property name="bottomMargin">
+         <number>0</number>
+        </property>
+        <item>
+         <layout class="QVBoxLayout" name="verticalLayout_5">
+          <item>
+           <widget class="QWidget" name="basic__options" native="true">
+            <property name="styleSheet">
+             <string notr="true"/>
+            </property>
+            <layout class="QHBoxLayout" name="horizontalLayout_3">
+             <item>
+              <widget class="QRadioButton" name="options__sell">
+               <property name="styleSheet">
+                <string notr="true"/>
+               </property>
+               <property name="text">
+                <string>Bán</string>
+               </property>
+               <property name="checked">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QRadioButton" name="options__rent">
+               <property name="styleSheet">
+                <string notr="true"/>
+               </property>
+               <property name="text">
+                <string>Cho thuê</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QRadioButton" name="options__assignment">
+               <property name="styleSheet">
+                <string notr="true"/>
+               </property>
+               <property name="text">
+                <string>Sang nhượng</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item>
+           <widget class="QComboBox" name="basic__categories">
+            <item>
+             <property name="text">
+              <string>Nhà</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Nhà mặt tiền</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Biệt thự</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Căn hộ chung cư</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Khách sạn</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Homestay</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Đất</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>MBKD</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Kho</string>
+             </property>
+            </item>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </widget>
+     </item>
+     <item>
+      <widget class="QWidget" name="detail_info" native="true">
+       <layout class="QGridLayout" name="gridLayout_5">
+        <property name="leftMargin">
+         <number>4</number>
+        </property>
+        <property name="topMargin">
+         <number>4</number>
+        </property>
+        <property name="rightMargin">
+         <number>4</number>
+        </property>
+        <property name="bottomMargin">
+         <number>0</number>
+        </property>
+        <item row="0" column="0">
+         <layout class="QGridLayout" name="gridLayout_3">
+          <property name="leftMargin">
+           <number>4</number>
+          </property>
+          <property name="topMargin">
+           <number>4</number>
+          </property>
+          <property name="rightMargin">
+           <number>4</number>
+          </property>
+          <property name="bottomMargin">
+           <number>0</number>
+          </property>
+          <property name="horizontalSpacing">
+           <number>0</number>
+          </property>
+          <property name="verticalSpacing">
+           <number>-1</number>
+          </property>
+          <item row="3" column="0" colspan="2">
+           <widget class="QComboBox" name="legal">
+            <item>
+             <property name="text">
+              <string>Không sổ</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Sổ nông nghiệp chung</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Sổ nông nghiệp phân quyền</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Sổ nông nghiệp riêng</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Sổ xây dựng chung</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Sổ xây dựng phân quyền</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Sổ xây dựng riêng</string>
+             </property>
+            </item>
+           </widget>
+          </item>
+          <item row="0" column="0">
+           <layout class="QHBoxLayout" name="horizontalLayout_7">
+            <item>
+             <widget class="QLabel" name="detail__area_label">
+              <property name="text">
+               <string>Diện tích</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLineEdit" name="detail__"/>
+            </item>
+           </layout>
+          </item>
+          <item row="2" column="1">
+           <widget class="QComboBox" name="furniture">
+            <item>
+             <property name="text">
+              <string>Không nội thất</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Nội thất cơ bản</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Đầy đủ nội thất</string>
+             </property>
+            </item>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <layout class="QHBoxLayout" name="horizontalLayout_5">
+            <item>
+             <widget class="QLabel" name="detail__structure_label">
+              <property name="text">
+               <string>Kết cấu</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLineEdit" name="detail__structure"/>
+            </item>
+           </layout>
+          </item>
+          <item row="0" column="1">
+           <layout class="QHBoxLayout" name="horizontalLayout_6">
+            <item>
+             <widget class="QLabel" name="detail__function_label">
+              <property name="text">
+               <string>Công năng</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLineEdit" name="detail__function"/>
+            </item>
+           </layout>
+          </item>
+          <item row="1" column="1">
+           <layout class="QHBoxLayout" name="horizontalLayout_8">
+            <item>
+             <widget class="QLabel" name="detail__price_label">
+              <property name="text">
+               <string>Giá</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLineEdit" name="detail__price"/>
+            </item>
+           </layout>
+          </item>
+          <item row="2" column="0">
+           <widget class="QComboBox" name="building_line">
+            <item>
+             <property name="text">
+              <string>Đường xe máy</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Đường xe hơi</string>
+             </property>
+            </item>
+           </widget>
+          </item>
+          <item row="4" column="0" colspan="2">
+           <widget class="QPlainTextEdit" name="description">
+            <property name="placeholderText">
+             <string>Thêm mô tả</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="orientation">
+      <enum>Qt::Orientation::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::StandardButton::Cancel|QDialogButtonBox::StandardButton::Ok</set>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>DialogCreateRealEstate</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>248</x>
+     <y>254</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>157</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>DialogCreateRealEstate</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>316</x>
+     <y>260</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>286</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>
