@@ -212,7 +212,7 @@ def initialize_product_database():
                 description TEXT,
                 status INTEGER DEFAULT 1,
                 createdAt TEXT DEFAULT (strftime('%Y-%m-%d %H:%M:%S', 'now')),
-                updatedAt TEXT DEFAULT (strftime('%Y-%m-%d %H:%M:%S', 'now'))
+                updatedAt TEXT DEFAULT (strftime('%Y-%m-%d %H:%M:%S', 'now')),
                
                 FOREIGN KEY (option_id) REFERENCES real_estate_options(id),
                 FOREIGN KEY (category_id) REFERENCES real_estate_categories(id),
