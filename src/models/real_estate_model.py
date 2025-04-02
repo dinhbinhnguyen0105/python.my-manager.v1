@@ -1,14 +1,18 @@
-# src/models/product_model.py
 from PyQt6.QtSql import QSqlTableModel
 from PyQt6.QtCore import Qt
+from src.contants import REAL_ESTATE_PRODUCT_TABLE, REAL_ESTATE_TEMPLATE_TABLE
 
 
-class RealEstateModel(QSqlTableModel):
+class RealEstateProductModel(QSqlTableModel):
     def __init__(self):
         super().__init__()
-        self.setTable("real_estate")
-        self.setEditStrategy(QSqlTableModel.EditStrategy.OnManualSubmit)
+        self.setTable(REAL_ESTATE_PRODUCT_TABLE)
+        self.editStrategy(QSqlTableModel.EditStrategy.OnManualSubmit)
         self.select()
 
     def flags(self, index):
-        return Qt.ItemFlag.ItemIsEditable | Qt.ItemFlag.ItemIsEnabled | Qt.ItemFlag.ItemIsSelectable
+        return Qt.ItemFlag.ItemIsSelectable | Qt.ItemFlag.ItemIsEnabled | Qt.ItemFlag.ItemIsSelectable
+
+
+class RealEstateTemplateModel(QSqlTableModel):
+    pass
