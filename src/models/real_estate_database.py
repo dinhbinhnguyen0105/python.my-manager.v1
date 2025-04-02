@@ -1,6 +1,6 @@
 # src/models/products_database.py
 from PyQt6.QtSql import QSqlDatabase, QSqlQuery
-from src.contants import REAL_ESTATE_PRODUCT_TABLE, REAL_ESTATE_TEMPLATE_TABLE
+from src.constants import REAL_ESTATE_PRODUCT_TABLE, REAL_ESTATE_TEMPLATE_TABLE
 
 
 def initialize_products_database() -> bool:
@@ -13,20 +13,23 @@ def initialize_products_database() -> bool:
 CREATE TABLE IF NOT EXISTS {REAL_ESTATE_PRODUCT_TABLE} (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 pid TEXT UNIQUE NOT NULL,
-                province_name TEXT,
-                district_name TEXT,
-                ward_name TEXT,
-                street_name TEXT,
-                category TEXT,
+                province TEXT,
+                district TEXT,
+                ward TEXT,
+                street TEXT,
+
                 option TEXT,
+                category TEXT,
+                
                 area REAL,
                 structure REAL,
                 function TEXT,
                 furniture TEXT,
                 building_line TEXT,
-                legal REAL,
+                legal TEXT,
                 description TEXT,
                 price REAL,
+                status INTEGER DEFAULT 1,
                 created_at TEXT DEFAULT (strftime('%Y-%m-%d %H:%M:%S', 'now')),
                 updated_at TEXT
                )

@@ -1,0 +1,326 @@
+{
+    "options": [
+        {
+            "name": [
+                "bán",
+                "sell"
+            ],
+            "value": "sell"
+        },
+        {
+            "name": [
+                "thuê",
+                "rent"
+            ],
+            "value": "rent"
+        },
+        {
+            "name": [
+                "assignment",
+                "chuyển nhượng"
+            ],
+            "value": "assignment"
+        }
+    ],
+    "categories": [
+        {
+            "name": [
+                "nhà",
+                "private house"
+            ],
+            "value": "private_house"
+        },
+        {
+            "name": [
+                "nhà mặt tiền",
+                "street house"
+            ],
+            "value": "street_house"
+        },
+        {
+            "name": [
+                "biệt thự",
+                "villa"
+            ],
+            "value": "villa"
+        },
+        {
+            "name": [
+                "đất nền",
+                "land"
+            ],
+            "value": "land"
+        },
+        {
+            "name": [
+                "chung cư",
+                "apartment"
+            ],
+            "value": "apartment"
+        },
+        {
+            "name": [
+                "homestay",
+                "homestay"
+            ],
+            "value": "homestay"
+        },
+        {
+            "name": [
+                "khách sạn",
+                "hotel"
+            ],
+            "value": "hotel"
+        },
+        {
+            "name": [
+                "kho",
+                "workshop"
+            ],
+            "value": "workshop"
+        },
+        {
+            "name": [
+                "MBKD",
+                "retail space"
+            ],
+            "value": "retail_space"
+        },
+        {
+            "name": [
+                "coffee house",
+                "coffee house"
+            ],
+            "value": "coffee_house"
+        },
+        {
+            "name": [
+                "nhà hàng",
+                "restaurant"
+            ],
+            "value": "restaurant"
+        }
+    ],
+    "provinces": [
+        {
+            "name": [
+                "lâm đồng",
+                "lam dong"
+            ],
+            "value": "assignment"
+        }
+    ],
+    "districts": [
+        {
+            "name": [
+                "đà lạt",
+                "da lat"
+            ],
+            "value": "dalat"
+        }
+    ],
+    "wards": [
+        {
+            "name": [
+                "phường 1",
+                "1"
+            ],
+            "value": "1"
+        },
+        {
+            "name": [
+                "phường 2",
+                "2"
+            ],
+            "value": "2"
+        },
+        {
+            "name": [
+                "phường 3",
+                "3"
+            ],
+            "value": "3"
+        },
+        {
+            "name": [
+                "phường 4",
+                "4"
+            ],
+            "value": "4"
+        },
+        {
+            "name": [
+                "phường 5",
+                "5"
+            ],
+            "value": "5"
+        },
+        {
+            "name": [
+                "phường 6",
+                "6"
+            ],
+            "value": "6"
+        },
+        {
+            "name": [
+                "phường 7",
+                "7"
+            ],
+            "value": "7"
+        },
+        {
+            "name": [
+                "phường 8",
+                "8"
+            ],
+            "value": "8"
+        },
+        {
+            "name": [
+                "phường 9",
+                "9"
+            ],
+            "value": "9"
+        },
+        {
+            "name": [
+                "phường 10",
+                "10"
+            ],
+            "value": "10"
+        },
+        {
+            "name": [
+                "phường 11",
+                "11"
+            ],
+            "value": "11"
+        },
+        {
+            "name": [
+                "phường 12",
+                "12"
+            ],
+            "value": "12"
+        },
+        {
+            "name": [
+                "xã trạm hành",
+                "tram hanh"
+            ],
+            "value": "tramhanh"
+        },
+        {
+            "name": [
+                "xã tà nung",
+                "ta nung"
+            ],
+            "value": "tanung"
+        },
+        {
+            "name": [
+                "xã xuân trường",
+                "xuan truong"
+            ],
+            "value": "xuantruong"
+        },
+        {
+            "name": [
+                "xã xuân thọ",
+                "xuan tho"
+            ],
+            "value": "xuantho"
+        }
+    ],
+    "building_line_s": [
+        {
+            "name": [
+                "đường lớn",
+                "big road"
+            ],
+            "value": "big_road"
+        },
+        {
+            "name": [
+                "đường nhỏ",
+                "small road"
+            ],
+            "value": "small_road"
+        }
+    ],
+    "legal_s": [
+        {
+            "name": [
+                "không sổ",
+                "none"
+            ],
+            "value": "none"
+        },
+        {
+            "name": [
+                "sổ nông nghiệp chung",
+                "so nong nghiep chung"
+            ],
+            "value": "sonongnghiepchung"
+        },
+        {
+            "name": [
+                "sổ nông nghiệp phân quyền",
+                "so nong nghiep phan quyen"
+            ],
+            "value": "sonongnghiepphanquyen"
+        },
+        {
+            "name": [
+                "sổ nông nghiệp riêng",
+                "so nong nghiep rieng"
+            ],
+            "value": "sonongnghieprieng"
+        },
+        {
+            "name": [
+                "sổ xây dựng chung",
+                "so xay dung chung"
+            ],
+            "value": "soxaydungchung"
+        },
+        {
+            "name": [
+                "sổ xây dựng phân quyền",
+                "so xay dung phan quyen"
+            ],
+            "value": "soxaydungphanquyen"
+        },
+        {
+            "name": [
+                "sổ xây dựng riêng",
+                "so xay dung rieng"
+            ],
+            "value": "soxaydungrieng"
+        }
+    ],
+    "furniture_s": [
+        {
+            "name": [
+                "full nội thất",
+                "full furniture"
+            ],
+            "value": "full_furniture"
+        },
+        {
+            "name": [
+                "nội thất cơ bản",
+                "basic furniture"
+            ],
+            "value": "basic_furniture"
+        },
+        {
+            "name": [
+                "không nội thất",
+                "no furniture"
+            ],
+            "value": "no_furniture"
+        }
+    ]
+}
