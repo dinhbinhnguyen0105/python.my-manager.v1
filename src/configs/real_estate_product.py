@@ -58,3 +58,13 @@ class RealEstateProductConfigs:
         if not self.data:
             return []
         return self.data.get("furniture_s", [])
+
+    def image_dir(self):
+        if not self.data:
+            return ""
+        _path = os.path.dirname(__file__)
+
+        return self.data.get("image_directory", os.path.join(_path, "..", "repository", "images"))
+
+    def allowed_values(self):
+        return self.data.get("allowed_values", {})

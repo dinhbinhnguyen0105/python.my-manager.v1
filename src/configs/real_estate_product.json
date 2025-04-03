@@ -322,5 +322,68 @@
             ],
             "value": "no_furniture"
         }
-    ]
+    ],
+    "image_directory": "",
+    "allowed_values": {
+        "options": [
+            "sell",
+            "rent",
+            "assignment"
+        ],
+        "categories": [
+            "private_house",
+            "street_house",
+            "villa",
+            "land",
+            "apartment",
+            "homestay",
+            "hotel",
+            "workshop",
+            "retail_space",
+            "coffee_house",
+            "restaurant"
+        ],
+        "provinces": [
+            "assignment"
+        ],
+        "districts": [
+            "dalat"
+        ],
+        "wards": [
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9",
+            "10",
+            "11",
+            "12",
+            "tramhanh",
+            "tanung",
+            "xuantruong",
+            "xuantho"
+        ],
+        "building_line_s": [
+            "big_road",
+            "small_road"
+        ],
+        "legal_s": [
+            "none",
+            "sonongnghiepchung",
+            "sonongnghiepphanquyen",
+            "sonongnghieprieng",
+            "soxaydungchung",
+            "soxaydungphanquyen",
+            "soxaydungrieng"
+        ],
+        "furniture_s": [
+            "full_furniture",
+            "basic_furniture",
+            "no_furniture"
+        ]
+    }
 }

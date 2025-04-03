@@ -4,13 +4,13 @@ from typing import TypedDict, NotRequired
 
 class RealEstateProductType(TypedDict):
     id: NotRequired[int]
-    pid: NotRequired[str]
-    province_name: str = "lamdong"
-    district_name: str
-    ward_name: str
-    street_name: str
+    pid: str
+    province: str
+    district: str
+    ward: str
+    street: str
     category: str
-    option: str = "sell" | "rent" | "assignment"
+    option: str
     area: float
     structure: float
     function: str

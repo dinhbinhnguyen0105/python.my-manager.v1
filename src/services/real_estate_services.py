@@ -1,3 +1,4 @@
+import datetime
 from PyQt6.QtSql import QSqlQuery, QSqlDatabase
 from src._types import RealEstateProductType
 from src.constants import REAL_ESTATE_PRODUCT_TABLE
@@ -14,14 +15,17 @@ class RealEstateProductService:
                 option, category,
                 area, structure, function, furniture,
                 building_line, legal, description, status,
-                price
+                price, updated_at
             ) VALUES (:pid, :province, :district, :ward, :street,
                 :option, :category,
                 :area, :structure, :function, :furniture,
-                :building_line, :legal, :description, status,
-                :price
+                :building_line, :legal, :description, :status,
+                :price, :updated_at
             )
             """)
+        now = datetime.datetime.now()
+        formatted_time = now.strftime('%Y-%m-%d %H:%M:%S')
+        data["updated_at"] = formatted_time
         for key, value in data.items():
             if key == "id":
                 continue
@@ -88,6 +92,9 @@ class RealEstateProductService:
         sql_expression_update += " WHERE pid = :pid"
         query = QSqlQuery()
         query.prepare(sql_expression_update)
+        now = datetime.datetime.now()
+        formatted_time = now.strftime('%Y-%m-%d %H:%M:%S')
+        data["updated_at"] = formatted_time
         for key, value in data.items():
             if key == "id":
                 continue

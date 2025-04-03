@@ -7,7 +7,7 @@ class RealEstateProductModel(QSqlTableModel):
     def __init__(self):
         super().__init__()
         self.setTable(REAL_ESTATE_PRODUCT_TABLE)
-        self.editStrategy(QSqlTableModel.EditStrategy.OnManualSubmit)
+        self.setEditStrategy(QSqlTableModel.EditStrategy.OnManualSubmit)
         self.select()
 
     def flags(self, index):

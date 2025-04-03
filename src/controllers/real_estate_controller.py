@@ -31,64 +31,102 @@ class RealEstateController(QObject):
         except Exception as e:
             QMessageBox.critical(None, "Error", str(e))
 
-    def _validate_new_product(self, data):
-        # Implement validation logic here
-        # real_estate_product_configs = RealEstateProductConfigs()
-        # if data.get("option") not in real_estate_product_configs.options():
-        #     QMessageBox.critical(
-        #         None, "Error", "Invalid option selected.")
-        #     return False
-        # if data.get("category") not in real_estate_product_configs.categories():
-        #     QMessageBox.critical(
-        #         None, "Error", "Invalid category selected.")
-        #     return False
-        # if data.get("province") not in real_estate_product_configs.provinces():
-        #     QMessageBox.critical(
-        #         None, "Error", "Invalid province selected.")
-        #     return False
-        # if data.get("district") not in real_estate_product_configs.districts():
-        #     QMessageBox.critical(
-        #         None, "Error", "Invalid district selected.")
-        #     return False
-        # if data.get("ward") not in real_estate_product_configs.wards():
-        #     QMessageBox.critical(
-        #         None, "Error", "Invalid ward selected.")
-        #     return False
-        # if data.get("building_line") not in real_estate_product_configs.building_line_s():
-        #     QMessageBox.critical(
-        #         None, "Error", "Invalid building line selected.")
-        #     return False
-        # if data.get("legal") not in real_estate_product_configs.legal_s():
-        #     QMessageBox.critical(
-        #         None, "Error", "Invalid legal selected.")
-        #     return False
-        # if data.get("furniture") not in real_estate_product_configs.furniture_s():
-        #     QMessageBox.critical(
-        #         None, "Error", "Invalid furniture selected.")
-        #     return False
-        # if data.get("price") <= 0:
-        #     QMessageBox.critical(
-        #         None, "Error", "Price must be greater than 0.")
-        #     return False
-        # if data.get("area") <= 0:
-        #     QMessageBox.critical(
-        #         None, "Error", "Area must be greater than 0.")
-        #     return False
-        # if data.get("structure") <= 0:
-        #     QMessageBox.critical(
-        #         None, "Error", "Structure must be greater than 0.")
-        #     return False
-        # if not data.get("description"):
-        #     QMessageBox.critical(
-        #         None, "Error", "Description cannot be empty.")
-        #     return False
-        # if not data.get("function"):
-        #     QMessageBox.critical(
-        #         None, "Error", "Function cannot be empty.")
-        #     return False
-        # if not data.get("furniture"):
-        #     QMessageBox.critical(
-        #         None, "Error", "Furniture cannot be empty.")
-        #     return False
+    def read_product(self, pid: str) -> RealEstateProductType:
+        try:
+            product = RealEstateProductService.read(pid)
+            if not product:
+                QMessageBox.warning(None, "Warning", "Product not found.")
+            return product
+        except Exception as e:
+            QMessageBox.critical(None, "Error", str(e))
+            return None
 
+    def read_all_product(self) -> list[RealEstateProductType]:
+        try:
+            return RealEstateProductService.read_all()
+        except Exception as e:
+            QMessageBox.critical(None, "Error", str(e))
+            return []
+
+    def update_product(self, data: dict) -> bool:
+        try:
+            success = RealEstateProductService.update(data)
+            if success:
+                self.model.select()
+                self.data_changed.emit()
+                QMessageBox.information(
+                    None, "Success", "Real estate product updated successfully.")
+            else:
+                QMessageBox.warning(
+                    None, "Warning", "Failed to update product.")
+            return success
+        except Exception as e:
+            QMessageBox.critical(None, "Error", str(e))
+            return False
+
+    def delete_product(self, pid: str) -> bool:
+        try:
+            success = RealEstateProductService.delete(pid)
+            if success:
+                self.model.select()
+                self.data_changed.emit()
+                QMessageBox.information(
+                    None, "Success", "Real estate product deleted successfully.")
+            else:
+                QMessageBox.warning(
+                    None, "Warning", "Failed to delete product.")
+            return success
+        except Exception as e:
+            QMessageBox.critical(None, "Error", str(e))
+            return False
+
+    def _validate_new_product(self, data):
+        configs = RealEstateProductConfigs()
+        allowed_values = configs.allowed_values()
+
+        if data.get("option") not in allowed_values["options"]:
+            QMessageBox.critical(None, "Error", "Invalid option selected.")
+            return False
+        if data.get("category") not in allowed_values["categories"]:
+            QMessageBox.critical(None, "Error", "Invalid category selected.")
+            return False
+        if data.get("province") not in allowed_values["provinces"]:
+            QMessageBox.critical(None, "Error", "Invalid province selected.")
+            return False
+        if data.get("district") not in allowed_values["districts"]:
+            QMessageBox.critical(None, "Error", "Invalid district selected.")
+            return False
+        if data.get("ward") not in allowed_values["wards"]:
+            QMessageBox.critical(None, "Error", "Invalid ward selected.")
+            return False
+        if data.get("building_line") not in allowed_values["building_line_s"]:
+            QMessageBox.critical(
+                None, "Error", "Invalid building line selected.")
+            return False
+        if data.get("legal") not in allowed_values["legal_s"]:
+            QMessageBox.critical(None, "Error", "Invalid legal selected.")
+            return False
+        if data.get("furniture") not in allowed_values["furniture_s"]:
+            QMessageBox.critical(None, "Error", "Invalid furniture selected.")
+            return False
+        if data.get("price") <= 0:
+            QMessageBox.critical(
+                None, "Error", "Price must be greater than 0.")
+            return False
+        if data.get("area") <= 0:
+            QMessageBox.critical(None, "Error", "Area must be greater than 0.")
+            return False
+        if data.get("structure") <= 0:
+            QMessageBox.critical(
+                None, "Error", "Structure must be greater than 0.")
+            return False
+        if not data.get("description"):
+            QMessageBox.critical(None, "Error", "Description cannot be empty.")
+            return False
+        if not data.get("function"):
+            QMessageBox.critical(None, "Error", "Function cannot be empty.")
+            return False
+        if not data.get("furniture"):
+            QMessageBox.critical(None, "Error", "Furniture cannot be empty.")
+            return False
         return True
