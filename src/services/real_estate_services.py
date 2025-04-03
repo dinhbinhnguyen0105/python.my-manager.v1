@@ -133,6 +133,21 @@ class RealEstateProductService:
             columns.append(field_name)
         return columns
 
+    @staticmethod
+    def check_unique_pid(pid: str) -> bool:
+        query = QSqlQuery()
+        query.prepare(
+            f"""
+            SELECT pid FROM {REAL_ESTATE_PRODUCT_TABLE} WHERE pid = :pid
+            """)
+        query.bindValue(":pid", pid)
+        if not query.exec():
+            raise Exception(
+                f"Error checking unique pid [{pid}]: {query.lastError().text()}")
+        if query.next():
+            return True
+        return False
+
 
 class RealEstateTemplateService:
     pass

@@ -1,3 +1,5 @@
+# src/controllers/real_estate_controller.py
+import uuid
 from PyQt6.QtCore import Qt, QObject, pyqtSignal
 from PyQt6.QtWidgets import QMessageBox, QDataWidgetMapper
 from src.models.real_estate_model import RealEstateProductModel
@@ -79,6 +81,29 @@ class RealEstateController(QObject):
         except Exception as e:
             QMessageBox.critical(None, "Error", str(e))
             return False
+
+    @staticmethod
+    def generate_pid(option: str) -> str:
+        try:
+            while True:
+                uuid_str = str(uuid.uuid4())
+                pid = uuid_str.replace("-", "")[:8]
+                if option.lower() == "sell":
+                    pid = "S." + pid
+                elif option.lower() == "rent":
+                    pid = "R." + pid
+                elif option.lower() == "assignment":
+                    pid = "A." + pid
+                else:
+                    raise ValueError("Invalid option")
+                pid = ("RE." + pid).lower()
+                if not RealEstateProductService.check_unique_pid(pid):
+                    return pid
+                else:
+                    continue
+        except Exception as e:
+            QMessageBox.critical(None, "Error", str(e))
+            raise Exception("Failed to generate PID.")
 
     def _validate_new_product(self, data):
         configs = RealEstateProductConfigs()
