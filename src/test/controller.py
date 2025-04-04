@@ -1,5 +1,13 @@
 import sys
-from PyQt6.QtWidgets import QApplication, QWidget, QVBoxLayout, QTableView, QMainWindow, QLineEdit, QPushButton
+from PyQt6.QtWidgets import (
+    QApplication,
+    QWidget,
+    QVBoxLayout,
+    QTableView,
+    QMainWindow,
+    QLineEdit,
+    QPushButton,
+)
 
 from src.models.real_estate_database import initialize_products_database
 from src.controllers.real_estate_controller import RealEstateController
@@ -45,10 +53,7 @@ class MainWindow(QMainWindow):
     def add_product(self):
         pid = self.pid_input.text()
         option = self.option_input.text()
-        data = {
-            "pid": pid,
-            "option": option
-        }
+        data = {"pid": pid, "option": option}
         self.controller.add_product(data)
         self.model.select()
 

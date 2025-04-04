@@ -29,13 +29,14 @@ class RealEstateController(QObject):
             self.model.select()
             self.data_changed.emit()
             QMessageBox.information(
-                None, "Success", "Real estate product added successfully.")
+                None, "Success", "Real estate product added successfully."
+            )
         except Exception as e:
             QMessageBox.critical(None, "Error", str(e))
 
-    def read_product(self, pid: str) -> RealEstateProductType:
+    def read_product(self, id: int) -> RealEstateProductType:
         try:
-            product = RealEstateProductService.read(pid)
+            product = RealEstateProductService.read(id)
             if not product:
                 QMessageBox.warning(None, "Warning", "Product not found.")
             return product
@@ -52,31 +53,31 @@ class RealEstateController(QObject):
 
     def update_product(self, data: dict) -> bool:
         try:
-            success = RealEstateProductService.update(data)
+            success = RealEstateProductService.update(data.get("id"), data)
             if success:
                 self.model.select()
                 self.data_changed.emit()
                 QMessageBox.information(
-                    None, "Success", "Real estate product updated successfully.")
+                    None, "Success", "Real estate product updated successfully."
+                )
             else:
-                QMessageBox.warning(
-                    None, "Warning", "Failed to update product.")
+                QMessageBox.warning(None, "Warning", "Failed to update product.")
             return success
         except Exception as e:
             QMessageBox.critical(None, "Error", str(e))
             return False
 
-    def delete_product(self, pid: str) -> bool:
+    def delete_product(self, id: int) -> bool:
         try:
-            success = RealEstateProductService.delete(pid)
+            success = RealEstateProductService.delete(id)
             if success:
                 self.model.select()
                 self.data_changed.emit()
                 QMessageBox.information(
-                    None, "Success", "Real estate product deleted successfully.")
+                    None, "Success", "Real estate product deleted successfully."
+                )
             else:
-                QMessageBox.warning(
-                    None, "Warning", "Failed to delete product.")
+                QMessageBox.warning(None, "Warning", "Failed to delete product.")
             return success
         except Exception as e:
             QMessageBox.critical(None, "Error", str(e))
@@ -105,6 +106,20 @@ class RealEstateController(QObject):
             QMessageBox.critical(None, "Error", str(e))
             raise Exception("Failed to generate PID.")
 
+    @staticmethod
+    def get_image_path(id: int) -> str:
+        images = RealEstateProductService.get_images_in_directory(id)
+        return images
+
+    @staticmethod
+    def delete_image_dir(id: int) -> bool:
+        try:
+            RealEstateProductService.delete_directory(id)
+            return True
+        except Exception as e:
+            QMessageBox.critical(None, "Error", str(e))
+            return False
+
     def _validate_new_product(self, data):
         configs = RealEstateProductConfigs()
         allowed_values = configs.allowed_values()
@@ -125,8 +140,7 @@ class RealEstateController(QObject):
             QMessageBox.critical(None, "Error", "Invalid ward selected.")
             return False
         if data.get("building_line") not in allowed_values["building_line_s"]:
-            QMessageBox.critical(
-                None, "Error", "Invalid building line selected.")
+            QMessageBox.critical(None, "Error", "Invalid building line selected.")
             return False
         if data.get("legal") not in allowed_values["legal_s"]:
             QMessageBox.critical(None, "Error", "Invalid legal selected.")
@@ -135,15 +149,13 @@ class RealEstateController(QObject):
             QMessageBox.critical(None, "Error", "Invalid furniture selected.")
             return False
         if data.get("price") <= 0:
-            QMessageBox.critical(
-                None, "Error", "Price must be greater than 0.")
+            QMessageBox.critical(None, "Error", "Price must be greater than 0.")
             return False
         if data.get("area") <= 0:
             QMessageBox.critical(None, "Error", "Area must be greater than 0.")
             return False
         if data.get("structure") <= 0:
-            QMessageBox.critical(
-                None, "Error", "Structure must be greater than 0.")
+            QMessageBox.critical(None, "Error", "Structure must be greater than 0.")
             return False
         if not data.get("description"):
             QMessageBox.critical(None, "Error", "Description cannot be empty.")

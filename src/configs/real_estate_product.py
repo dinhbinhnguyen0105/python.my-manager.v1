@@ -9,7 +9,9 @@ class RealEstateProductConfigs:
     def load_data(self):
         try:
             _path = os.path.dirname(__file__)
-            with open(os.path.join(_path, "real_estate_product.json"), "r", encoding="utf-8") as file:
+            with open(
+                os.path.join(_path, "real_estate_product.json"), "r", encoding="utf-8"
+            ) as file:
                 data = json.load(file)
             return data
         except FileNotFoundError:
@@ -63,8 +65,10 @@ class RealEstateProductConfigs:
         if not self.data:
             return ""
         _path = os.path.dirname(__file__)
-
-        return self.data.get("image_directory", os.path.join(_path, "..", "repository", "images"))
+        image_dir = self.data.get("image_directory", "")
+        if not image_dir:
+            return os.path.join(_path, "..", "repositories", "images")
+        return image_dir
 
     def allowed_values(self):
         return self.data.get("allowed_values", {})

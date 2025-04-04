@@ -4,6 +4,7 @@ from typing import TypedDict, NotRequired
 
 class RealEstateProductType(TypedDict):
     id: NotRequired[int]
+    image_path: NotRequired[list[str]]
     pid: str
     province: str
     district: str
