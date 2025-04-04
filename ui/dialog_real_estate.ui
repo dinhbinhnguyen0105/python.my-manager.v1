@@ -29,6 +29,7 @@ padding: 4px 0;
 border: 1px solid #CED4DA;
 border-radius: 8px;
 margin-left: 8px;
+padding-left: 4px;
 }
 QLabel{
 font-family: &quot;Courier New&quot;;
@@ -86,7 +87,7 @@ background-color: rgba(248, 249, 250, 1);
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout">
         <item>
-         <widget class="QLabel" name="image_label">
+         <widget class="QLabel" name="image_input">
           <property name="minimumSize">
            <size>
             <width>0</width>
@@ -209,7 +210,7 @@ border-radius: 4px;</string>
          </widget>
         </item>
         <item row="0" column="2">
-         <widget class="QComboBox" name="options_input">
+         <widget class="QComboBox" name="categories_input">
           <item>
            <property name="text">
             <string>--- Loại hình bất động sản---</string>
@@ -364,60 +365,7 @@ font-size: 10px;
        <number>8</number>
       </property>
       <item row="0" column="0">
-       <layout class="QGridLayout" name="gridLayout_5" columnstretch="0,4">
-        <item row="1" column="1">
-         <widget class="QWidget" name="function_container_w" native="true">
-          <layout class="QVBoxLayout" name="verticalLayout_10">
-           <property name="leftMargin">
-            <number>0</number>
-           </property>
-           <property name="topMargin">
-            <number>0</number>
-           </property>
-           <property name="rightMargin">
-            <number>0</number>
-           </property>
-           <property name="bottomMargin">
-            <number>0</number>
-           </property>
-           <item>
-            <layout class="QVBoxLayout" name="verticalLayout_11">
-             <property name="spacing">
-              <number>0</number>
-             </property>
-             <item>
-              <widget class="QLabel" name="function_label">
-               <property name="maximumSize">
-                <size>
-                 <width>16777215</width>
-                 <height>12</height>
-                </size>
-               </property>
-               <property name="font">
-                <font>
-                 <family>Courier New</family>
-                 <pointsize>-1</pointsize>
-                </font>
-               </property>
-               <property name="lineWidth">
-                <number>1</number>
-               </property>
-               <property name="text">
-                <string>Công năng</string>
-               </property>
-               <property name="indent">
-                <number>-1</number>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QLineEdit" name="function_input"/>
-             </item>
-            </layout>
-           </item>
-          </layout>
-         </widget>
-        </item>
+       <layout class="QGridLayout" name="gridLayout_5" columnstretch="0,4,0,0">
         <item row="1" column="0">
          <widget class="QWidget" name="price_container_w" native="true">
           <layout class="QVBoxLayout" name="verticalLayout_8">
@@ -471,7 +419,78 @@ font-size: 10px;
           </layout>
          </widget>
         </item>
-        <item row="0" column="1">
+        <item row="2" column="0">
+         <widget class="QComboBox" name="furniture_s_input">
+          <item>
+           <property name="text">
+            <string>Chọn nội thất</string>
+           </property>
+          </item>
+         </widget>
+        </item>
+        <item row="2" column="1">
+         <widget class="QComboBox" name="building_line_s_input">
+          <item>
+           <property name="text">
+            <string>Chọn lộ giới</string>
+           </property>
+          </item>
+         </widget>
+        </item>
+        <item row="1" column="1" colspan="3">
+         <widget class="QWidget" name="function_container_w" native="true">
+          <layout class="QVBoxLayout" name="verticalLayout_10">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
+           <item>
+            <layout class="QVBoxLayout" name="verticalLayout_11">
+             <property name="spacing">
+              <number>0</number>
+             </property>
+             <item>
+              <widget class="QLabel" name="function_label">
+               <property name="maximumSize">
+                <size>
+                 <width>16777215</width>
+                 <height>12</height>
+                </size>
+               </property>
+               <property name="font">
+                <font>
+                 <family>Courier New</family>
+                 <pointsize>-1</pointsize>
+                </font>
+               </property>
+               <property name="lineWidth">
+                <number>1</number>
+               </property>
+               <property name="text">
+                <string>Công năng</string>
+               </property>
+               <property name="indent">
+                <number>-1</number>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLineEdit" name="function_input"/>
+             </item>
+            </layout>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item row="0" column="2" colspan="2">
          <widget class="QWidget" name="structure_container_w" native="true">
           <layout class="QVBoxLayout" name="verticalLayout_6">
            <property name="leftMargin">
@@ -524,7 +543,60 @@ font-size: 10px;
           </layout>
          </widget>
         </item>
-        <item row="2" column="0" colspan="2">
+        <item row="0" column="0" colspan="2">
+         <widget class="QWidget" name="area_container_w" native="true">
+          <layout class="QVBoxLayout" name="verticalLayout_24">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
+           <item>
+            <layout class="QVBoxLayout" name="verticalLayout_25">
+             <property name="spacing">
+              <number>0</number>
+             </property>
+             <item>
+              <widget class="QLabel" name="area_label">
+               <property name="maximumSize">
+                <size>
+                 <width>16777215</width>
+                 <height>12</height>
+                </size>
+               </property>
+               <property name="font">
+                <font>
+                 <family>Courier New</family>
+                 <pointsize>-1</pointsize>
+                </font>
+               </property>
+               <property name="lineWidth">
+                <number>1</number>
+               </property>
+               <property name="text">
+                <string>Diện tích</string>
+               </property>
+               <property name="indent">
+                <number>-1</number>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLineEdit" name="area_input"/>
+             </item>
+            </layout>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item row="3" column="0" colspan="4">
          <widget class="QWidget" name="description_container_w" native="true">
           <layout class="QVBoxLayout" name="verticalLayout_22">
            <property name="leftMargin">
@@ -577,57 +649,13 @@ font-size: 10px;
           </layout>
          </widget>
         </item>
-        <item row="0" column="0">
-         <widget class="QWidget" name="area_container_w" native="true">
-          <layout class="QVBoxLayout" name="verticalLayout_24">
-           <property name="leftMargin">
-            <number>0</number>
+        <item row="2" column="2" colspan="2">
+         <widget class="QComboBox" name="legal_s_input">
+          <item>
+           <property name="text">
+            <string>Chọn pháp lý</string>
            </property>
-           <property name="topMargin">
-            <number>0</number>
-           </property>
-           <property name="rightMargin">
-            <number>0</number>
-           </property>
-           <property name="bottomMargin">
-            <number>0</number>
-           </property>
-           <item>
-            <layout class="QVBoxLayout" name="verticalLayout_25">
-             <property name="spacing">
-              <number>0</number>
-             </property>
-             <item>
-              <widget class="QLabel" name="area_label">
-               <property name="maximumSize">
-                <size>
-                 <width>16777215</width>
-                 <height>12</height>
-                </size>
-               </property>
-               <property name="font">
-                <font>
-                 <family>Courier New</family>
-                 <pointsize>-1</pointsize>
-                </font>
-               </property>
-               <property name="lineWidth">
-                <number>1</number>
-               </property>
-               <property name="text">
-                <string>Diện tích</string>
-               </property>
-               <property name="indent">
-                <number>-1</number>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QLineEdit" name="area_input"/>
-             </item>
-            </layout>
-           </item>
-          </layout>
+          </item>
          </widget>
         </item>
        </layout>
