@@ -1,13 +1,13 @@
 # src/views/dialog_create_real_estate.py
-from PyQt6.QtCore import Qt, QMimeData
+from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtGui import QDragEnterEvent, QDropEvent, QPixmap
-from PyQt6.QtWidgets import QDialog, QLabel  # Import QDialog and QLabel
+from PyQt6.QtWidgets import QDialog, QLabel, QDialogButtonBox, QMessageBox
 from src.ui.dialog_create_real_estate_ui import Ui_DialogCreateRealEstate
 from src.configs.real_estate_product import RealEstateProductConfigs
 from src.controllers.real_estate_controller import RealEstateController
+from src.models.real_estate_model import RealEstateProductModel
 
 
-# Inherit from QDialog
 class DialogCreateRealEstate(QDialog, Ui_DialogCreateRealEstate):
     def __init__(self, parent=None):
         super().__init__(parent)  # Initialize QDialog
@@ -32,11 +32,13 @@ class DialogCreateRealEstate(QDialog, Ui_DialogCreateRealEstate):
         }
         self.setupUi(self)
 
+        self.model = RealEstateProductModel()
+        self.controller = RealEstateController(self.model)
+
         self.setWindowTitle("Create Real Estate")
         self.setFixedSize(self.size())
 
         self.legal.setDisabled(True)
-        self.buttonBox.setDisabled(True)
 
         self.sell.clicked.connect(
             lambda: self._setupUi("sell"))
@@ -45,25 +47,58 @@ class DialogCreateRealEstate(QDialog, Ui_DialogCreateRealEstate):
         self.assignment.clicked.connect(
             lambda: self._setupUi("assignment"))
 
-        # Connect signals to slots
-        self.buttonBox.accepted.connect(self.on_accept)
+        self.category.currentIndexChanged.connect(lambda: self._setField(
+            "category", self.category.currentData()))
+        self.province.currentIndexChanged.connect(lambda: self._setField(
+            "province", self.province.currentData()))
+        self.district.currentIndexChanged.connect(lambda: self._setField(
+            "district", self.district.currentData()))
+        self.ward.currentIndexChanged.connect(lambda: self._setField(
+            "ward", self.ward.currentData()))
+        self.street.textChanged.connect(lambda: self._setField(
+            "street", self.street.text()))
+        self.area.textChanged.connect(lambda: self._setField(
+            "area", self.area.text()))
+        self.price.textChanged.connect(lambda: self._setField(
+            "price", self.price.text()))
+        self.function.textChanged.connect(lambda: self._setField(
+            "function", self.function.text()))
+        self.structure.textChanged.connect(lambda: self._setField(
+            "structure", self.structure.text()))
+        self.building_line.currentIndexChanged.connect(lambda: self._setField(
+            "building_line", self.building_line.currentData()))
+        self.furniture.currentIndexChanged.connect(lambda: self._setField(
+            "furniture", self.furniture.currentData()))
+        self.legal.currentIndexChanged.connect(lambda: self._setField(
+            "legal", self.legal.currentData()))
+        self.description.textChanged.connect(lambda: self._setField(
+            "description", self.description.toPlainText()))
+
+        self.btn_save = self.buttonBox.button(
+            QDialogButtonBox.StandardButton.Save)
+        self.btn_save.disconnect()
+        self.btn_save.clicked.connect(self.on_accept)
         self.buttonBox.rejected.connect(self.on_reject)
 
         self.setupImageDrop()
 
     def _setupUi(self, option):
-        self.buttonBox.setDisabled(False)
         self.fields["option"] = option
-        self.fields.update()
         self.setupComboBox()
         if option == "rent" or option == "assignment":
             self.legal.setDisabled(True)
         else:
             self.legal.setDisabled(False)
-
         # Generate a unique PID
-        self.fields["pid"] = RealEstateController.generate_pid(option)
+
+        self.fields["pid"] = self.controller.generate_pid(option)
         self.pid.setText(self.fields["pid"])
+
+    def _setField(self, field, value):
+        value = value.strip()
+        if not field == "description":
+            value = value.lower()
+        self.fields[field] = value
 
     def setupComboBox(self):
         # Setup combo boxes with data from RealEstateProductConfigs
@@ -107,35 +142,50 @@ class DialogCreateRealEstate(QDialog, Ui_DialogCreateRealEstate):
 
     def on_accept(self):
         # Handle the accept button click
-        self.fields["category"] = self.category.currentData()
-        self.fields["province"] = self.province.currentData()
-        self.fields["district"] = self.district.currentData()
-        self.fields["ward"] = self.ward.currentData()
-        self.fields["street"] = self.street.text()
-        self.fields["area"] = self.area.text()
-        self.fields["price"] = self.price.text()
-        self.fields["function"] = self.function.text()
-        self.fields["structure"] = self.structure.text()
-        self.fields["building_line"] = self.building_line.currentData()
-        self.fields["furniture"] = self.furniture.currentData()
-        self.fields["legal"] = self.legal.currentData()
-        self.fields["description"] = self.description.toPlainText()
-        print(self.fields)
-        # Validate and process the data
-        pass
+        if self.validate():
+            print("Fields:", self.fields)
+            self.controller.add_product(self.fields)
+            self.accept()
+        else:
+            return False
 
     def on_reject(self):
         # Handle the reject button click
         pass
 
-    def validate_required_fields(self):
-        # Validate required fields
-        self.fields.get("area")
-        pass
+    def validate(self):
+        if len(self.fields.get("image_path")) < 1:
+            QMessageBox.critical(
+                None, "Error", "Please select at least one image.")
+            return False
+        if not self.fields.get("street"):
+            QMessageBox.critical(None, "Error", "Street cannot be empty.")
+            return False
+        if not self.fields.get("area") or self.str_to_float(self.fields.get("area")) == False:
+            QMessageBox.critical(None, "Error", "Area must be a number.")
+            return False
+        if not self.fields.get("price") or self.str_to_float(self.fields.get("price")) == False:
+            QMessageBox.critical(None, "Error", "Price must be a number.")
+            return False
+        if not self.fields.get("structure") or self.str_to_float(self.fields.get("structure")) == False:
+            QMessageBox.critical(None, "Error", "Structure cannot be empty.")
+            return False
+        if not self.fields.get("function"):
+            QMessageBox.critical(
+                None, "Error", "Function cannot be empty.")
+            return False
+        if not self.fields.get("description"):
+            QMessageBox.critical(
+                None, "Error", "Description cannot be empty.")
+            return False
+
+        return True
 
     def str_to_float(self, str: str):
-        # Convert string to float
         try:
+            _result = float(str)
+            if _result == 0:
+                return True
             return float(str)
         except ValueError:
             return False
@@ -154,16 +204,12 @@ class DialogCreateRealEstate(QDialog, Ui_DialogCreateRealEstate):
 
     def imagesDropEvent(self, event: QDropEvent):
         if event.mimeData().hasUrls():
-            self.fields["images"] = [url.toLocalFile()
-                                     for url in event.mimeData().urls()]
-
-            self.handleDroppedImages(self.fields["images"])
+            self.fields["image_path"] = [url.toLocalFile()
+                                         for url in event.mimeData().urls()]
+            self.handleDroppedImages(self.fields["image_path"])
 
     def handleDroppedImages(self, image_paths):
-        # Handle the dropped image paths
-        print("Dropped images:", image_paths)
         if image_paths:
-            # Display the first image in self.images
             pixmap = QPixmap(image_paths[0])
             if not pixmap.isNull():
                 self.images.setPixmap(pixmap.scaled(

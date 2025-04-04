@@ -1,3 +1,4 @@
+# src/models/real_estate_model.py
 from PyQt6.QtSql import QSqlTableModel
 from PyQt6.QtCore import Qt
 from src.constants import REAL_ESTATE_PRODUCT_TABLE, REAL_ESTATE_TEMPLATE_TABLE
