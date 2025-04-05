@@ -28,12 +28,13 @@ if __name__ == "__main__":
 
     model = RealEstateProductModel()
     controller = RealEstateController(model)
-    data = controller.read_product(4)
-    # print(data)
+    # data = controller.read_product(4)
+    data = controller.read_all_product()
+    print(data)
     # exit()
 
     # print(controller.read_all_product())
-    dialog.load_fields(data)
+    # dialog.load_fields(data)
 
     # Đọc ghi luôn dựa trên id, vì khi update pid có thể thay đổi
 
