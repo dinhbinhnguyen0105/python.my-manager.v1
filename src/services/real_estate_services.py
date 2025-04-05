@@ -9,11 +9,6 @@ from src.configs.real_estate_product import RealEstateProductConfigs
 class RealEstateProductService:
     @staticmethod
     def create(data: RealEstateProductType) -> bool:
-        config = RealEstateProductConfigs()
-        destination = os.path.join(config.image_dir(), str(data["id"]))
-        RealEstateProductService.copy_files(
-            data.get("image_path", []), destination, str(data["id"])
-        )
         query = QSqlQuery()
         query.prepare(
             f"""
@@ -42,6 +37,18 @@ class RealEstateProductService:
             raise Exception(
                 f"Error inserting real estate product: {query.lastError().text()}"
             )
+
+        query.exec("SELECT last_insert_rowid()")
+        if query.next():
+            current_id = query.value(0)
+            config = RealEstateProductConfigs()
+            destination = os.path.join(config.image_dir(), str(current_id))
+            RealEstateProductService.copy_files(
+                data.get("image_path", []), destination, str(current_id)
+            )
+
+        else:
+            raise Exception("Failed to retrieve the last inserted ID.")
         return True
 
     @staticmethod
@@ -136,6 +143,7 @@ class RealEstateProductService:
             raise Exception(
                 f"Error deleting real estate product with id [{id}]: {query.lastError().text()}"
             )
+        RealEstateProductService.delete_directory(str(id))
         return True
 
     @staticmethod

@@ -1,5 +1,4 @@
-# src/ui/product_real_estate_ui.py
-# Form implementation generated from reading ui file '/Volumes/KINGSTON/Dev/python/python.my-manager.v1/ui/product_real_estate.ui'
+# Form implementation generated from reading ui file '/Users/ndb/Dev/python/python.my-manager.v1/ui/product_real_estate.ui'
 #
 # Created by: PyQt6 UI code generator 6.8.1
 #
@@ -17,24 +16,22 @@ class Ui_ProductRealEstate(object):
         font = QtGui.QFont()
         font.setFamily("Courier New")
         ProductRealEstate.setFont(font)
-        ProductRealEstate.setStyleSheet(
-            "QGroupBox {\n"
-            'font-family: "Courier New";\n'
-            "font-size: 13px;\n"
-            "background-color: rgba(248, 249, 250, 1);\n"
-            "}\n"
-            "QLineEdit{\n"
-            "border: 1px solid #CED4DA;\n"
-            "border-radius: 4px;\n"
-            "margin-left: 8px;\n"
-            "padding: 4px 0 4px 4px;\n"
-            "}\n"
-            "QLabel{\n"
-            "font-size: 10px;\n"
-            "color: rgb(90, 93, 97);\n"
-            "max-height: 16px\n"
-            "}"
-        )
+        ProductRealEstate.setStyleSheet("QGroupBox {\n"
+"font-family: \"Courier New\";\n"
+"font-size: 13px;\n"
+"background-color: rgba(248, 249, 250, 1);\n"
+"}\n"
+"QLineEdit{\n"
+"border: 1px solid #CED4DA;\n"
+"border-radius: 4px;\n"
+"margin-left: 8px;\n"
+"padding: 4px 0 4px 4px;\n"
+"}\n"
+"QLabel{\n"
+"font-size: 10px;\n"
+"color: rgb(90, 93, 97);\n"
+"max-height: 16px\n"
+"}")
         self.horizontalLayout_6 = QtWidgets.QHBoxLayout(ProductRealEstate)
         self.horizontalLayout_6.setContentsMargins(4, 4, 4, 4)
         self.horizontalLayout_6.setObjectName("horizontalLayout_6")
@@ -54,7 +51,7 @@ class Ui_ProductRealEstate(object):
         self.search_container.setMaximumSize(QtCore.QSize(16777215, 16777215))
         font = QtGui.QFont()
         font.setFamily("Courier New")
-        font.setPointSize(10)
+        font.setPointSize(-1)
         self.search_container.setFont(font)
         self.search_container.setAutoFillBackground(False)
         self.search_container.setStyleSheet("")
@@ -80,13 +77,14 @@ class Ui_ProductRealEstate(object):
         self.furniture_label = QtWidgets.QLabel(parent=self.furniture_cotnainer_w)
         font = QtGui.QFont()
         font.setFamily(".AppleSystemUIFont")
-        font.setPointSize(10)
+        font.setPointSize(-1)
         self.furniture_label.setFont(font)
         self.furniture_label.setStyleSheet("margin: 0;")
         self.furniture_label.setObjectName("furniture_label")
         self.verticalLayout_10.addWidget(self.furniture_label)
         self.furniture_input = QtWidgets.QLineEdit(parent=self.furniture_cotnainer_w)
-        self.furniture_input.setStyleSheet("margin: 0;\n" "padding-left: 4px;")
+        self.furniture_input.setStyleSheet("margin: 0;\n"
+"padding-left: 4px;")
         self.furniture_input.setObjectName("furniture_input")
         self.verticalLayout_10.addWidget(self.furniture_input)
         self.verticalLayout_9.addLayout(self.verticalLayout_10)
@@ -102,7 +100,7 @@ class Ui_ProductRealEstate(object):
         self.wards_label = QtWidgets.QLabel(parent=self.wards_container_w)
         font = QtGui.QFont()
         font.setFamily(".AppleSystemUIFont")
-        font.setPointSize(10)
+        font.setPointSize(-1)
         self.wards_label.setFont(font)
         self.wards_label.setStyleSheet("margin: 0;")
         self.wards_label.setObjectName("wards_label")
@@ -125,7 +123,7 @@ class Ui_ProductRealEstate(object):
         self.options_label = QtWidgets.QLabel(parent=self.options_container_w)
         font = QtGui.QFont()
         font.setFamily(".AppleSystemUIFont")
-        font.setPointSize(10)
+        font.setPointSize(-1)
         self.options_label.setFont(font)
         self.options_label.setStyleSheet("margin: 0;")
         self.options_label.setObjectName("options_label")
@@ -147,7 +145,7 @@ class Ui_ProductRealEstate(object):
         self.categories_label = QtWidgets.QLabel(parent=self.categories_container_w)
         font = QtGui.QFont()
         font.setFamily(".AppleSystemUIFont")
-        font.setPointSize(10)
+        font.setPointSize(-1)
         self.categories_label.setFont(font)
         self.categories_label.setStyleSheet("margin: 0;")
         self.categories_label.setObjectName("categories_label")
@@ -158,9 +156,7 @@ class Ui_ProductRealEstate(object):
         self.verticalLayout_26.addWidget(self.categories_input)
         self.verticalLayout_25.addLayout(self.verticalLayout_26)
         self.gridLayout.addWidget(self.categories_container_w, 0, 3, 1, 1)
-        self.building_line_s_container_w = QtWidgets.QWidget(
-            parent=self.search_container
-        )
+        self.building_line_s_container_w = QtWidgets.QWidget(parent=self.search_container)
         self.building_line_s_container_w.setObjectName("building_line_s_container_w")
         self.verticalLayout_21 = QtWidgets.QVBoxLayout(self.building_line_s_container_w)
         self.verticalLayout_21.setContentsMargins(0, 0, 0, 0)
@@ -168,19 +164,15 @@ class Ui_ProductRealEstate(object):
         self.verticalLayout_21.setObjectName("verticalLayout_21")
         self.verticalLayout_22 = QtWidgets.QVBoxLayout()
         self.verticalLayout_22.setObjectName("verticalLayout_22")
-        self.building_line_s_label = QtWidgets.QLabel(
-            parent=self.building_line_s_container_w
-        )
+        self.building_line_s_label = QtWidgets.QLabel(parent=self.building_line_s_container_w)
         font = QtGui.QFont()
         font.setFamily(".AppleSystemUIFont")
-        font.setPointSize(10)
+        font.setPointSize(-1)
         self.building_line_s_label.setFont(font)
         self.building_line_s_label.setStyleSheet("margin: 0;")
         self.building_line_s_label.setObjectName("building_line_s_label")
         self.verticalLayout_22.addWidget(self.building_line_s_label)
-        self.building_line_s_input = QtWidgets.QComboBox(
-            parent=self.building_line_s_container_w
-        )
+        self.building_line_s_input = QtWidgets.QComboBox(parent=self.building_line_s_container_w)
         self.building_line_s_input.setObjectName("building_line_s_input")
         self.building_line_s_input.addItem("")
         self.verticalLayout_22.addWidget(self.building_line_s_input)
@@ -197,14 +189,12 @@ class Ui_ProductRealEstate(object):
         self.furniture_s_lable = QtWidgets.QLabel(parent=self.furniture_s_container_w)
         font = QtGui.QFont()
         font.setFamily(".AppleSystemUIFont")
-        font.setPointSize(10)
+        font.setPointSize(-1)
         self.furniture_s_lable.setFont(font)
         self.furniture_s_lable.setStyleSheet("margin: 0;")
         self.furniture_s_lable.setObjectName("furniture_s_lable")
         self.verticalLayout_20.addWidget(self.furniture_s_lable)
-        self.furniture_s_input = QtWidgets.QComboBox(
-            parent=self.furniture_s_container_w
-        )
+        self.furniture_s_input = QtWidgets.QComboBox(parent=self.furniture_s_container_w)
         self.furniture_s_input.setObjectName("furniture_s_input")
         self.furniture_s_input.addItem("")
         self.verticalLayout_20.addWidget(self.furniture_s_input)
@@ -221,7 +211,7 @@ class Ui_ProductRealEstate(object):
         self.legal_s_label = QtWidgets.QLabel(parent=self.legal_s_container_w)
         font = QtGui.QFont()
         font.setFamily(".AppleSystemUIFont")
-        font.setPointSize(10)
+        font.setPointSize(-1)
         self.legal_s_label.setFont(font)
         self.legal_s_label.setStyleSheet("margin: 0;")
         self.legal_s_label.setObjectName("legal_s_label")
@@ -242,13 +232,14 @@ class Ui_ProductRealEstate(object):
         self.verticalLayout.setObjectName("verticalLayout")
         self.pid_label = QtWidgets.QLabel(parent=self.pid_container_w)
         font = QtGui.QFont()
-        font.setPointSize(10)
+        font.setPointSize(-1)
         self.pid_label.setFont(font)
         self.pid_label.setStyleSheet("margin: 0;")
         self.pid_label.setObjectName("pid_label")
         self.verticalLayout.addWidget(self.pid_label)
         self.pid_input = QtWidgets.QLineEdit(parent=self.pid_container_w)
-        self.pid_input.setStyleSheet("margin: 0;\n" "padding-left: 4px;")
+        self.pid_input.setStyleSheet("margin: 0;\n"
+"padding-left: 4px;")
         self.pid_input.setObjectName("pid_input")
         self.verticalLayout.addWidget(self.pid_input)
         self.verticalLayout_2.addLayout(self.verticalLayout)
@@ -264,13 +255,14 @@ class Ui_ProductRealEstate(object):
         self.street_label = QtWidgets.QLabel(parent=self.street_container_w)
         font = QtGui.QFont()
         font.setFamily(".AppleSystemUIFont")
-        font.setPointSize(10)
+        font.setPointSize(-1)
         self.street_label.setFont(font)
         self.street_label.setStyleSheet("margin: 0;")
         self.street_label.setObjectName("street_label")
         self.verticalLayout_4.addWidget(self.street_label)
         self.street_input = QtWidgets.QLineEdit(parent=self.street_container_w)
-        self.street_input.setStyleSheet("margin: 0;\n" "padding-left: 4px;")
+        self.street_input.setStyleSheet("margin: 0;\n"
+"padding-left: 4px;")
         self.street_input.setObjectName("street_input")
         self.verticalLayout_4.addWidget(self.street_input)
         self.verticalLayout_3.addLayout(self.verticalLayout_4)
@@ -286,13 +278,14 @@ class Ui_ProductRealEstate(object):
         self.area_label = QtWidgets.QLabel(parent=self.area_container_w)
         font = QtGui.QFont()
         font.setFamily(".AppleSystemUIFont")
-        font.setPointSize(10)
+        font.setPointSize(-1)
         self.area_label.setFont(font)
         self.area_label.setStyleSheet("margin: 0;")
         self.area_label.setObjectName("area_label")
         self.verticalLayout_6.addWidget(self.area_label)
         self.area_input = QtWidgets.QLineEdit(parent=self.area_container_w)
-        self.area_input.setStyleSheet("margin: 0;\n" "padding-left: 4px;")
+        self.area_input.setStyleSheet("margin: 0;\n"
+"padding-left: 4px;")
         self.area_input.setObjectName("area_input")
         self.verticalLayout_6.addWidget(self.area_input)
         self.verticalLayout_5.addLayout(self.verticalLayout_6)
@@ -308,13 +301,14 @@ class Ui_ProductRealEstate(object):
         self.price_label = QtWidgets.QLabel(parent=self.price_container_w)
         font = QtGui.QFont()
         font.setFamily(".AppleSystemUIFont")
-        font.setPointSize(10)
+        font.setPointSize(-1)
         self.price_label.setFont(font)
         self.price_label.setStyleSheet("margin: 0;")
         self.price_label.setObjectName("price_label")
         self.verticalLayout_12.addWidget(self.price_label)
         self.price_input = QtWidgets.QLineEdit(parent=self.price_container_w)
-        self.price_input.setStyleSheet("margin: 0;\n" "padding-left: 4px;")
+        self.price_input.setStyleSheet("margin: 0;\n"
+"padding-left: 4px;")
         self.price_input.setObjectName("price_input")
         self.verticalLayout_12.addWidget(self.price_input)
         self.verticalLayout_11.addLayout(self.verticalLayout_12)
@@ -330,13 +324,14 @@ class Ui_ProductRealEstate(object):
         self.structure_label = QtWidgets.QLabel(parent=self.structure_container_w)
         font = QtGui.QFont()
         font.setFamily(".AppleSystemUIFont")
-        font.setPointSize(10)
+        font.setPointSize(-1)
         self.structure_label.setFont(font)
         self.structure_label.setStyleSheet("margin: 0;")
         self.structure_label.setObjectName("structure_label")
         self.verticalLayout_8.addWidget(self.structure_label)
         self.structure_input = QtWidgets.QLineEdit(parent=self.structure_container_w)
-        self.structure_input.setStyleSheet("margin: 0;\n" "padding-left: 4px;")
+        self.structure_input.setStyleSheet("margin: 0;\n"
+"padding-left: 4px;")
         self.structure_input.setObjectName("structure_input")
         self.verticalLayout_8.addWidget(self.structure_input)
         self.verticalLayout_7.addLayout(self.verticalLayout_8)
@@ -359,17 +354,10 @@ class Ui_ProductRealEstate(object):
         self.action_upload_btn = QtWidgets.QPushButton(parent=self.actions_container_w)
         self.action_upload_btn.setObjectName("action_upload_btn")
         self.horizontalLayout.addWidget(self.action_upload_btn)
-        self.action_download_btn = QtWidgets.QPushButton(
-            parent=self.actions_container_w
-        )
+        self.action_download_btn = QtWidgets.QPushButton(parent=self.actions_container_w)
         self.action_download_btn.setObjectName("action_download_btn")
         self.horizontalLayout.addWidget(self.action_download_btn)
-        spacerItem = QtWidgets.QSpacerItem(
-            40,
-            20,
-            QtWidgets.QSizePolicy.Policy.Expanding,
-            QtWidgets.QSizePolicy.Policy.Minimum,
-        )
+        spacerItem = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.horizontalLayout.addItem(spacerItem)
         self.horizontalLayout_2.addLayout(self.horizontalLayout)
         self.verticalLayout_27.addWidget(self.actions_container_w)
@@ -400,9 +388,7 @@ class Ui_ProductRealEstate(object):
         self.detail_text = QtWidgets.QPlainTextEdit(parent=self.details_container_w)
         self.detail_text.setObjectName("detail_text")
         self.verticalLayout_17.addWidget(self.detail_text)
-        self.detail_action_container_w = QtWidgets.QGroupBox(
-            parent=self.details_container_w
-        )
+        self.detail_action_container_w = QtWidgets.QGroupBox(parent=self.details_container_w)
         self.detail_action_container_w.setTitle("")
         self.detail_action_container_w.setObjectName("detail_action_container_w")
         self.horizontalLayout_4 = QtWidgets.QHBoxLayout(self.detail_action_container_w)
@@ -410,14 +396,10 @@ class Ui_ProductRealEstate(object):
         self.horizontalLayout_4.setObjectName("horizontalLayout_4")
         self.horizontalLayout_3 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_3.setObjectName("horizontalLayout_3")
-        self.action_default_btn = QtWidgets.QPushButton(
-            parent=self.detail_action_container_w
-        )
+        self.action_default_btn = QtWidgets.QPushButton(parent=self.detail_action_container_w)
         self.action_default_btn.setObjectName("action_default_btn")
         self.horizontalLayout_3.addWidget(self.action_default_btn)
-        self.action_random_btn = QtWidgets.QPushButton(
-            parent=self.detail_action_container_w
-        )
+        self.action_random_btn = QtWidgets.QPushButton(parent=self.detail_action_container_w)
         self.action_random_btn.setObjectName("action_random_btn")
         self.horizontalLayout_3.addWidget(self.action_random_btn)
         self.horizontalLayout_4.addLayout(self.horizontalLayout_3)
@@ -435,18 +417,12 @@ class Ui_ProductRealEstate(object):
         self.furniture_label.setText(_translate("ProductRealEstate", "Công năng"))
         self.wards_label.setText(_translate("ProductRealEstate", "Phường"))
         self.wards_input.setItemText(0, _translate("ProductRealEstate", "Tất cả"))
-        self.options_label.setText(
-            _translate("ProductRealEstate", "Loại hình kinh doanh")
-        )
+        self.options_label.setText(_translate("ProductRealEstate", "Loại hình kinh doanh"))
         self.options_input.setItemText(0, _translate("ProductRealEstate", "Tất cả"))
-        self.categories_label.setText(
-            _translate("ProductRealEstate", "Danh mục bất động sản")
-        )
+        self.categories_label.setText(_translate("ProductRealEstate", "Danh mục bất động sản"))
         self.categories_input.setItemText(0, _translate("ProductRealEstate", "Tất cả"))
         self.building_line_s_label.setText(_translate("ProductRealEstate", "Lộ giới"))
-        self.building_line_s_input.setItemText(
-            0, _translate("ProductRealEstate", "Tất cả")
-        )
+        self.building_line_s_input.setItemText(0, _translate("ProductRealEstate", "Tất cả"))
         self.furniture_s_lable.setText(_translate("ProductRealEstate", "Nội thất"))
         self.furniture_s_input.setItemText(0, _translate("ProductRealEstate", "Tất cả"))
         self.legal_s_label.setText(_translate("ProductRealEstate", "Pháp lý"))
