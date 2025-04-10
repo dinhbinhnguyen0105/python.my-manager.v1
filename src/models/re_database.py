@@ -28,6 +28,7 @@ def initialize_re_db():
 
         if not db.commit():
             logger.error("Commit failed")
+            return False
         return True
     except Exception as e:
         if db.isOpen():
@@ -35,16 +36,9 @@ def initialize_re_db():
         logger.error(
             f"Database initialization failed: {str(e)}", exc_info=True)
         return False
-    finally:
-        if db.isOpen():
-            db.close()
 
 
 def _create_tables(db: QSqlDatabase):
-    if not _create_product_table(db):
-        return False
-    if not _create_template_table(db):
-        return False
     for table in [constants.RE_SETTING_STATUSES_TABLE,
                   constants.RE_SETTING_PROVINCES_TABLE,
                   constants.RE_SETTING_DISTRICTS_TABLE,
@@ -56,30 +50,35 @@ def _create_tables(db: QSqlDatabase):
                   constants.RE_SETTING_LEGAL_S_TABLE]:
         if not _create_dep_table(db, table):
             return False
+    if not _create_product_table(db):
+        return False
+    if not _create_template_table(db):
+        return False
+    return True
 
 
 def _seed_data_s(db: QSqlDatabase):
+    if not _seed_dep(db, constants.RE_SETTING_STATUSES_TABLE, constants.RE_SETTING_STATUSES):
+        return False
+    if not _seed_dep(db, constants.RE_SETTING_PROVINCES_TABLE, constants.RE_SETTING_PROVINCES):
+        return False
+    if not _seed_dep(db, constants.RE_SETTING_DISTRICTS_TABLE, constants.RE_SETTING_DISTRICTS):
+        return False
+    if not _seed_dep(db, constants.RE_SETTING_WARDS_TABLE, constants.RE_SETTING_WARDS):
+        return False
+    if not _seed_dep(db, constants.RE_SETTING_OPTIONS_TABLE, constants.RE_SETTING_OPTIONS):
+        return False
+    if not _seed_dep(db, constants.RE_SETTING_CATEGORIES_TABLE, constants.RE_SETTING_CATEGORIES):
+        return False
+    if not _seed_dep(db, constants.RE_SETTING_BUILDING_LINE_S_TABLE, constants.RE_SETTING_BUILDING_LINE_S):
+        return False
+    if not _seed_dep(db, constants.RE_SETTING_FURNITURE_S_TABLE, constants.RE_SETTING_FURNITURE_S):
+        return False
+    if not _seed_dep(db, constants.RE_SETTING_LEGAL_S_TABLE, constants.RE_SETTING_LEGAL_S):
+        return False
     if not _seed_title_template(db):
         return False
     if not _seed_description_template(db):
-        return False
-    if not _seed_dep(constants.RE_SETTING_STATUSES_TABLE, constants.RE_SETTING_STATUSES):
-        return False
-    if not _seed_dep(constants.RE_SETTING_PROVINCES_TABLE, constants.RE_SETTING_PROVINCES):
-        return False
-    if not _seed_dep(constants.RE_SETTING_DISTRICTS_TABLE, constants.RE_SETTING_DISTRICTS):
-        return False
-    if not _seed_dep(constants.RE_SETTING_WARDS_TABLE, constants.RE_SETTING_WARDS):
-        return False
-    if not _seed_dep(constants.RE_SETTING_OPTIONS_TABLE, constants.RE_SETTING_OPTIONS):
-        return False
-    if not _seed_dep(constants.RE_SETTING_CATEGORIES_TABLE, constants.RE_SETTING_CATEGORIES):
-        return False
-    if not _seed_dep(constants.RE_SETTING_BUILDING_LINE_S_TABLE, constants.RE_SETTING_BUILDING_LINE_S):
-        return False
-    if not _seed_dep(constants.RE_SETTING_FURNITURE_S_TABLE, constants.RE_SETTING_FURNITURE_S):
-        return False
-    if not _seed_dep(constants.RE_SETTING_LEGAL_S_TABLE, constants.RE_SETTING_LEGAL_S):
         return False
     return True
 
@@ -169,10 +168,11 @@ created_at TEXT DEFAULT (strftime('%Y-%m-%d %H:%M:%S', 'now'))
 def _seed_title_template(db: QSqlDatabase):
     query = QSqlQuery(db)
     sql = f"""
-INSERT OR IGNORE INTO {constants.RE_TEMPLATE_TITLE_TABLE} (tid, option_id, value)
-VALUES (:tid, :option_id, :value)
+INSERT OR IGNORE INTO {constants.RE_TEMPLATE_TITLE_TABLE} (id, tid, option_id, value)
+VALUES (:id, :tid, :option_id, :value)
 """
     query.prepare(sql)
+    query.bindValue(":id", 0)
     query.bindValue(":tid", "T.T.default")
     query.bindValue(":option_id", 1)
     query.bindValue(
@@ -187,10 +187,11 @@ VALUES (:tid, :option_id, :value)
 def _seed_description_template(db: QSqlDatabase):
     query = QSqlQuery(db)
     sql = f"""
-INSERT OR IGNORE INTO {constants.RE_TEMPLATE_DESCRIPTION_TABLE} (tid, option_id, value)
-VALUES (:tid, :option_id, :value)
+INSERT OR IGNORE INTO {constants.RE_TEMPLATE_DESCRIPTION_TABLE} (id, tid, option_id, value)
+VALUES (:id, :tid, :option_id, :value)
 """
     query.prepare(sql)
+    query.bindValue(":id", 0)
     query.bindValue(":tid", "T.D.default")
     query.bindValue(":option_id", 1)
     query.bindValue(":value", "ID: <PID>\n🗺 Vị trí: đường <street>, <ward>, <district>\n📏 Diện tích: <area>\n🏗 Kết cấu: <structure>\n🛌 Công năng: <function>\n📺 Nội thất: <furniture>\n🚗 Lộ giới: <building_line>\n📜 Pháp lý: <legal>\n<icon><icon> Mô tả:\n<description>\n------------\n💵 Giá: <price><unit>- Thương lượng chính chủ\n\n☎ Liên hệ: 0375.155.525 - Mr. Bình\n🌺🌺🌺🌺🌺🌺🌺🌺🌺🌺🌺🌺🌺\n🌺Ký gửi mua, bán - cho thuê, thuê bất động sản xin liên hệ 0375.155.525 - Mr. Bình🌺\n🌺🌺🌺🌺🌺🌺🌺🌺🌺🌺🌺🌺🌺")
