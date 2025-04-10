@@ -12,14 +12,15 @@ if __name__ == "__main__":
     if not initialize_re_db():
         print("ERROR init db")
         exit()
-    # RETemplateService().create(constants.RE_TEMPLATE_TITLE_TABLE, {
-    #     "tid": "1",
-    #     "option_id": 1,
-    #     "value": "1"
-    # })
+    # RETemplateService().create(
+    #     constants.RE_TEMPLATE_TITLE_TABLE, {"tid": "1", "option_id": 1, "value": "1"}
+    # )
 
-    title_templates = RETemplateService.read_all(
-        constants.RE_TEMPLATE_TITLE_TABLE)
-    print(title_templates)
+    # title_templates = RETemplateService.read_all(constants.RE_TEMPLATE_TITLE_TABLE)
+    # print(title_templates)
 
-    # print(RETemplateService.read(constants.RE_TEMPLATE_TITLE_TABLE, 0))
+    # RETemplateService.update(constants.RE_TEMPLATE_TITLE_TABLE, 1, {"tid": 5})
+    # print(RETemplateService.read(constants.RE_TEMPLATE_TITLE_TABLE, 1))
+    RETemplateService.delete(constants.RE_TEMPLATE_TITLE_TABLE, 1)
+
+    print(RETemplateService.read_all(constants.RE_TEMPLATE_TITLE_TABLE))
