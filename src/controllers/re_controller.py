@@ -64,21 +64,21 @@ class REProductController(QObject):
                 None, "Warning", "Could not submit changes from UI.")
             return False
 
-    def add_product(self, data):
-        data.setdefault("image_paths", [])
-        data.setdefault("area", 0.0)
-        data.setdefault("structure", 0.0)
-        data.setdefault("function", "")
-        data.setdefault("street", "")
-        data.setdefault("description", "")
-        data.setdefault("price", 0.0)
+    def add_product(self, payload):
+        payload.setdefault("image_paths", [])
+        payload.setdefault("area", 0.0)
+        payload.setdefault("structure", 0.0)
+        payload.setdefault("function", "")
+        payload.setdefault("street", "")
+        payload.setdefault("description", "")
+        payload.setdefault("price", 0.0)
         try:
-            if not re_controller_utils.validate_new_product(data):
+            if not re_controller_utils.validate_new_product(payload):
                 return False
-            if len(data.get("image_paths")) < 1:
+            if len(payload.get("image_paths")) < 1:
                 QMessageBox.critical(None, "Error", "Invalid images.")
                 return False
-            if REProductService.create(data):
+            if REProductService.create(payload):
                 self.model.select()
                 QMessageBox.information(
                     None, "Success", "Real estate product added successfully."
@@ -111,17 +111,17 @@ class REProductController(QObject):
             QMessageBox.critical(None, "Error", str(e))
             return []
 
-    def update_product(self, record_id, data):
-        data.setdefault("image_path", [])
-        data.setdefault("area", 0.0)
-        data.setdefault("structure", 0.0)
-        data.setdefault("function", "")
-        data.setdefault("description", "")
-        data.setdefault("price", 0.0)
+    def update_product(self, record_id, payload):
+        payload.setdefault("image_path", [])
+        payload.setdefault("area", 0.0)
+        payload.setdefault("structure", 0.0)
+        payload.setdefault("function", "")
+        payload.setdefault("description", "")
+        payload.setdefault("price", 0.0)
         try:
-            if not re_controller_utils.validate_new_product(data):
+            if not re_controller_utils.validate_new_product(payload):
                 return False
-            if REProductService.update(record_id, data):
+            if REProductService.update(record_id, payload):
                 self.model.select()
                 QMessageBox.information(
                     None, "Success", "Real estate product updated successfully."
@@ -158,3 +158,190 @@ class REProductController(QObject):
     @staticmethod
     def get_columns():
         return re_controller_utils.get_columns()
+
+
+class RESettingController(QObject):
+    def __init__(self, table_name, parent=None):
+        super().__init__(parent)
+        self.table_name = table_name
+        self.model = BaseSettingModel(self.table_name)
+
+    def add_new(self, payload):
+        try:
+            if RESettingService.create(self.table_name, payload):
+                self.model.select()
+            else:
+                QMessageBox.critical(
+                    None, "Error", "Failed to create new record.")
+
+            return True
+        except Exception as e:
+            error_msg = f"Error creating new record: {e}"
+            QMessageBox.critical(None, "Error", error_msg)
+
+    def read(self, record_id):
+        try:
+            return RESettingService.read(self.table_name, record_id)
+        except Exception as e:
+            error_msg = f"Error reading record: {e}"
+            QMessageBox.critical(None, "Error", error_msg)
+            return None
+
+    def update(self, record_id: int, payload: dict):
+        try:
+            if RESettingService.update(self.table_name, record_id, payload):
+                self.model.select()
+            else:
+                QMessageBox.critical(
+                    None, "Error", f"Failed to update record with ID: {record_id}."
+                )
+        except Exception as e:
+            error_msg = f"Error updating record: {e}"
+            QMessageBox.critical(None, "Error", error_msg)
+
+    def delete(self, record_id: int):
+        try:
+            if RESettingService.delete(self.table_name, record_id):
+                self.model.select()
+            else:
+                QMessageBox.critical(
+                    None, "Error", f"Failed to delete record with ID: {record_id}."
+                )
+        except Exception as e:
+            error_msg = f"Error deleting record: {e}"
+            QMessageBox.critical(None, "Error", error_msg)
+
+    def get_all(self):
+        try:
+            return RESettingService.read_all(self.table_name)
+        except Exception as e:
+            error_msg = f"Error fetching all records: {e}"
+            QMessageBox.critical(None, "Error", error_msg)
+            return []
+
+
+class RETemplateController(QObject):
+    def __init__(self, table_name, parent=None):
+        super().__init__(parent)
+        self.table_name = table_name
+        self.model = BaseSettingModel(self.table_name)
+
+    def create_new(self, payload):
+        if not payload.get("value"):
+            QMessageBox.critical(
+                None, "Error", f"Input field cannot be empty.")
+        try:
+            tid = self.generate_tid()
+            result = RETemplateService.create(
+                self.table_name,
+                {"tid": tid, "value": payload.get(
+                    "value"), "option_id": payload.get("option_id")},
+            )
+            self.model.select()
+            return result
+        except Exception as e:
+            error_msg = f"Error creating new record: {e}"
+            QMessageBox.critical(None, "Error", error_msg)
+
+    def read(self, record_id):
+        try:
+            return RETemplateService.read(self.table_name, record_id)
+        except Exception as e:
+            error_msg = f"Error reading record: {e}"
+            QMessageBox.critical(None, "Error", error_msg)
+            return None
+
+    def update(self, record_id: int, payload: dict):
+        try:
+            if RETemplateService.update(self.table_name, record_id, payload):
+                self.model.select()
+            else:
+                QMessageBox.critical(
+                    None, "Error", f"Failed to update record with ID: {record_id}."
+                )
+        except Exception as e:
+            error_msg = f"Error updating record: {e}"
+            QMessageBox.critical(None, "Error", error_msg)
+
+    def delete(self, record_id: int):
+        try:
+            if RETemplateService.delete(self.table_name, record_id):
+                self.model.select()
+            else:
+                QMessageBox.critical(
+                    None, "Error", f"Failed to delete record with ID: {record_id}."
+                )
+        except Exception as e:
+            error_msg = f"Error deleting record: {e}"
+            QMessageBox.critical(None, "Error", error_msg)
+
+    def read_all(self):
+        try:
+            return RETemplateService.read_all(self.table_name)
+        except Exception as e:
+            error_msg = f"Error fetching all records: {e}"
+            QMessageBox.critical(None, "Error", error_msg)
+            return []
+
+    def generate_tid(self):
+        return re_controller_utils.generate_tid(self.table_name)
+
+
+class REImageDirController(QObject):
+    def __init__(self, table_name, parent=None):
+        super().__init__(parent)
+        self.table_name = table_name
+        self.model = BaseSettingModel(self.table_name)
+
+    def read(self, condition):
+        try:
+            return REImageDirService.read(condition)
+        except Exception as e:
+            error_msg = f"Error reading record: {e}"
+            QMessageBox.critical(None, "Error", error_msg)
+            return None
+
+    def read_all(self):
+        try:
+            return REImageDirService.read_all(self.table_name)
+        except Exception as e:
+            error_msg = f"Error fetching all records: {e}"
+            QMessageBox.critical(None, "Error", error_msg)
+            return []
+
+    def create_new(self, payload):
+        try:
+            if REImageDirService.create(payload):
+                self.model.select()
+            else:
+                QMessageBox.critical(
+                    None, "Error", "Failed to create new record.")
+
+            return True
+        except Exception as e:
+            error_msg = f"Error creating new record: {e}"
+            QMessageBox.critical(None, "Error", error_msg)
+
+    def update(self, record_id, payload):
+        try:
+            if REImageDirService.update(record_id, payload):
+                self.model.select()
+            else:
+                QMessageBox.critical(
+                    None, "Error", f"Failed to update record with ID: {record_id}."
+                )
+        except Exception as e:
+            error_msg = f"Error updating record: {e}"
+            QMessageBox.critical(None, "Error", error_msg)
+
+    def delete(self, record_id):
+        try:
+            if REImageDirService.delete(record_id):
+                self.model.select()
+            else:
+                QMessageBox.critical(
+                    None, "Error", f"Failed to delete record with ID: {record_id}."
+                )
+        except Exception as e:
+            error_msg = f"Error deleting record: {e}"
+            QMessageBox.critical(None, "Error", error_msg)

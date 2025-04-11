@@ -6,6 +6,7 @@ from PyQt6.QtWidgets import QMessageBox
 from src import constants
 from src.services.re_service import (
     REImageDirService,
+    RETemplateService,
 )
 
 from src.services import re_service_utils
@@ -34,6 +35,24 @@ def generate_pid(option):
     except Exception as e:
         QMessageBox.critical(None, "Error", str(e))
         raise Exception("Failed to generate PID.")
+
+
+def generate_tid(table_name):
+    try:
+        while True:
+            uuid_str = str(uuid.uuid4())
+            tid = uuid_str.replace("-", "")[:8]
+            if table_name == constants.RE_TEMPLATE_TITLE_TABLE:
+                tid = "T.T." + tid
+            elif table_name == constants.RE_TEMPLATE_DESCRIPTION_TABLE:
+                tid = "T.D." + tid
+            if not re_service_utils.is_value_existed(table_name, {"tid": tid}):
+                return tid
+            else:
+                continue
+    except Exception as e:
+        QMessageBox.critical(None, "Error", str(e))
+        raise Exception("Failed to generate TID.")
 
 
 def validate_new_product(data):
