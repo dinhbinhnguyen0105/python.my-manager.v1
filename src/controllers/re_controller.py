@@ -3,8 +3,9 @@ import uuid
 from PyQt6.QtCore import QObject, pyqtSignal
 from PyQt6.QtWidgets import QMessageBox, QDataWidgetMapper
 
-from .re_controller_utils import validate_new_product, get_image_path, get_columns
+# from .re_controller_utils import validate_new_product, get_image_path, get_columns
 from src import constants
+from src.controllers import re_controller_utils
 from src.models.re_model import BaseSettingModel
 from src.services.re_service import (
     REImageDirService,
@@ -15,6 +16,8 @@ from src.services.re_service import (
 
 
 class REProductController(QObject):
+    current_record_changed = pyqtSignal(dict)
+
     def __init__(self, model, parent=None):
         super().__init__(parent)
         self.model = model
@@ -23,7 +26,8 @@ class REProductController(QObject):
 
     def _initialize_mapper(self):
         self.mapper.setModel(self.model)
-        self.mapper.setSubmitPolicy(QDataWidgetMapper.SubmitPolicy.ManualSubmit)
+        self.mapper.setSubmitPolicy(
+            QDataWidgetMapper.SubmitPolicy.ManualSubmit)
         self.mapper.currentIndexChanged.connect(self._on_current_index_changed)
         self.load_data()
 
@@ -56,7 +60,8 @@ class REProductController(QObject):
                 )
                 return False
         else:
-            QMessageBox.warning(None, "Warning", "Could not submit changes from UI.")
+            QMessageBox.warning(
+                None, "Warning", "Could not submit changes from UI.")
             return False
 
     def add_product(self, data):
@@ -68,7 +73,7 @@ class REProductController(QObject):
         data.setdefault("description", "")
         data.setdefault("price", 0.0)
         try:
-            if not validate_new_product(data):
+            if not re_controller_utils.validate_new_product(data):
                 return False
             if len(data.get("image_paths")) < 1:
                 QMessageBox.critical(None, "Error", "Invalid images.")
@@ -114,7 +119,7 @@ class REProductController(QObject):
         data.setdefault("description", "")
         data.setdefault("price", 0.0)
         try:
-            if not self.validate_new_product(data):
+            if not re_controller_utils.validate_new_product(data):
                 return False
             if REProductService.update(record_id, data):
                 self.model.select()
@@ -123,7 +128,8 @@ class REProductController(QObject):
                 )
                 return True
             else:
-                QMessageBox.warning(None, "Warning", "Failed to update product.")
+                QMessageBox.warning(
+                    None, "Warning", "Failed to update product.")
                 return False
         except Exception as e:
             QMessageBox.critical(None, "Error", str(e))
@@ -138,7 +144,8 @@ class REProductController(QObject):
                 )
                 return True
             else:
-                QMessageBox.warning(None, "Warning", "Failed to delete product.")
+                QMessageBox.warning(
+                    None, "Warning", "Failed to delete product.")
                 return False
         except Exception as e:
             QMessageBox.critical(None, "Error", str(e))
@@ -146,8 +153,8 @@ class REProductController(QObject):
 
     @staticmethod
     def get_image_paths(record_id):
-        return get_image_path(record_id)
+        return re_controller_utils.get_image_path(record_id)
 
     @staticmethod
     def get_columns():
-        return get_columns()
+        return re_controller_utils.get_columns()

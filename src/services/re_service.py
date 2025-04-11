@@ -1,5 +1,6 @@
 # src/services/re_service.py
-import logging, os
+import logging
+import os
 from PyQt6.QtSql import QSqlQuery, QSqlDatabase
 
 from src import constants
@@ -157,6 +158,10 @@ JOIN {constants.RE_SETTING_LEGAL_S_TABLE} legal_s ON main.legal_id = legal_s.id
                 db.rollback()
                 logger.error("Image dir path is undefined.")
                 return False
+
+            if not exec_query(db, query):
+                return False
+            is_affected(query)
             image_paths = payload.get("image_paths")
 
             current_id = None
@@ -171,14 +176,9 @@ JOIN {constants.RE_SETTING_LEGAL_S_TABLE} legal_s ON main.legal_id = legal_s.id
                 )
                 return False
             image_dir = os.path.join(img_record.get("value"), str(current_id))
-
             if not copy_files(image_paths, image_dir, current_id):
                 db.rollback()
-                raise False
-
-            if not exec_query(db, query):
                 return False
-            is_affected(query)
             if not commit_db(db):
                 return False
             return True
@@ -489,7 +489,8 @@ class RETemplateService:
             logger.error("Failed to start transaction.")
             return False
         try:
-            set_clause = ", ".join([f"{key} = :{key}" for key in payload.keys()])
+            set_clause = ", ".join(
+                [f"{key} = :{key}" for key in payload.keys()])
             sql = f"""
             UPDATE {table_name}
             SET {set_clause}, updated_at = (strftime('%Y-%m-%d %H:%M:%S', 'now'))
@@ -622,7 +623,8 @@ class REImageDirService:
             logger.error("Failed to start transaction.")
             return False
         try:
-            set_clause = ", ".join([f"{key} = :{key}" for key in payload.keys()])
+            set_clause = ", ".join(
+                [f"{key} = :{key}" for key in payload.keys()])
             sql = f"""
             UPDATE {constants.RE_SETTING_IMG_DIR_TABLE}
             SET {set_clause}, updated_at = (strftime('%Y-%m-%d %H:%M:%S', 'now'))
