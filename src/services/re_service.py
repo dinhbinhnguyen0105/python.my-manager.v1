@@ -6,10 +6,10 @@ from src import constants
 from .re_service_utils import (
     exec_query,
     commit_db,
-    get_images_in_directory,
     is_affected,
     get_columns,
     copy_files,
+    is_value_existed,
 )
 
 logger = logging.getLogger(__name__)
@@ -250,6 +250,10 @@ JOIN {constants.RE_SETTING_LEGAL_S_TABLE} legal_s ON main.legal_id = legal_s.id
             db.rollback()
             logger.error(f"ERROR: {e}", exc_info=True)
             return False
+
+    @staticmethod
+    def is_pid_existed(pid):
+        return is_value_existed(constants.RE_PRODUCT_TABLE, {"pid": pid})
 
 
 class RESettingService:
