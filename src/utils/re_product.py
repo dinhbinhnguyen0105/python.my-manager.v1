@@ -11,26 +11,26 @@ from src.controllers.re_controller import RETemplateController, RESettingControl
 
 def init_template(table_name, raw_data, default=True):
     if table_name == constants.RE_TEMPLATE_TITLE_TABLE:
-        controller_template = RETemplateController(
-            constants.RE_TEMPLATE_TITLE_TABLE)
+        controller_template = RETemplateController(constants.RE_TEMPLATE_TITLE_TABLE)
     elif table_name == constants.RE_TEMPLATE_DESCRIPTION_TABLE:
         controller_template = RETemplateController(
-            constants.RE_TEMPLATE_DESCRIPTION_TABLE)
+            constants.RE_TEMPLATE_DESCRIPTION_TABLE
+        )
 
     if default:
-        title_template = controller_template.read(0)
+        template_raw = controller_template.read(0)
     else:
-        title_template_ids = controller_template.get_ids_by_condition(
-            {"option_id": raw_data.get("option_id")})
-        random_title = title_template_ids[randint(
-            0, len(title_template_ids) - 1)]
-        title_template = controller_template.read(random_title)
+        template_ids = controller_template.get_ids_by_condition(
+            {"option_id": raw_data.get("option_id")}
+        )
+        random_title = template_ids[randint(0, len(template_ids) - 1)]
+        template_raw = controller_template.read(random_title)
 
-    raw_template = title_template.get("value")
+    raw_template = template_raw.get("value")
     template = _relay_keyword(raw_data, raw_template)
     return {
         "template": template,
-        "tid": title_template.get("tid"),
+        "tid": template_raw.get("tid"),
     }
 
 
@@ -50,30 +50,38 @@ def _relay_keyword(raw_data, template: str):
 
     if keyword_values.get("option").get("value") == "sell":
         raw_data.setdefault("unit", "tỷ")
-    elif raw_data.get("option").get("value") == "rent" or raw_data.get("option").get("value") == "assignment":
+    elif (
+        raw_data.get("option").get("value") == "rent"
+        or raw_data.get("option").get("value") == "assignment"
+    ):
         raw_data.setdefault("unit", "triệu/tháng")
 
     template = template.replace(
-        "<option>", keyword_values.get("option").get("label_vi"))
+        "<option>", keyword_values.get("option").get("label_vi")
+    )
     template = template.replace(
-        "<category>", keyword_values.get("category").get("label_vi"))
+        "<category>", keyword_values.get("category").get("label_vi")
+    )
     template = template.replace(
-        "<province>", keyword_values.get("province").get("label_vi").title())
+        "<province>", keyword_values.get("province").get("label_vi").title()
+    )
     template = template.replace(
-        "<district>", keyword_values.get("district").get("label_vi").title())
+        "<district>", keyword_values.get("district").get("label_vi").title()
+    )
     template = template.replace(
-        "<ward>", keyword_values.get("ward").get("label_vi").title())
+        "<ward>", keyword_values.get("ward").get("label_vi").title()
+    )
+    template = template.replace("<legal>", keyword_values.get("legal").get("label_vi"))
     template = template.replace(
-        "<legal>", keyword_values.get("legal").get("label_vi"))
+        "<furniture>", keyword_values.get("furniture").get("label_vi")
+    )
     template = template.replace(
-        "<furniture>", keyword_values.get("furniture").get("label_vi"))
-    template = template.replace(
-        "<building_line>", keyword_values.get("building_line").get("label_vi"))
+        "<building_line>", keyword_values.get("building_line").get("label_vi")
+    )
     template = template.replace("<price>", str(raw_data.get("price")))
     template = template.replace("<PID>", raw_data.get("pid"))
     template = template.replace("<street>", raw_data.get("street").title())
-    template = template.replace("<structure>", str(
-        raw_data.get("structure")) + " tầng")
+    template = template.replace("<structure>", str(raw_data.get("structure")) + " tầng")
     template = template.replace("<function>", raw_data.get("function"))
     template = template.replace("<description>", raw_data.get("description"))
     template = template.replace("<unit>", raw_data.get("unit"))
@@ -81,8 +89,7 @@ def _relay_keyword(raw_data, template: str):
 
     icon = constants.ICONS[randint(0, len(constants.ICONS) - 1)]
     while template != template.replace("<icon>", icon, 1):
-        icon = constants.ICONS[randint(
-            0, len(constants.ICONS) - 1)]
+        icon = constants.ICONS[randint(0, len(constants.ICONS) - 1)]
         template = template.replace("<icon>", icon, 1)
 
     return template
@@ -90,7 +97,8 @@ def _relay_keyword(raw_data, template: str):
 
 def _get_value(data):
     option = RESettingController.static_read(
-        constants.RE_SETTING_OPTIONS_TABLE, data.get("option_id"))
+        constants.RE_SETTING_OPTIONS_TABLE, data.get("option_id")
+    )
     category = RESettingController.static_read(
         constants.RE_SETTING_CATEGORIES_TABLE, data.get("category_id")
     )
@@ -110,8 +118,7 @@ def _get_value(data):
         constants.RE_SETTING_FURNITURE_S_TABLE, data.get("furniture_id")
     )
     building_line = RESettingController.static_read(
-        constants.RE_SETTING_BUILDING_LINE_S_TABLE, data.get(
-            "building_line_id")
+        constants.RE_SETTING_BUILDING_LINE_S_TABLE, data.get("building_line_id")
     )
 
     return {
@@ -126,38 +133,15 @@ def _get_value(data):
     }
 
 
-def open_dir(path):
-    """Mở File Explorer (Windows) hoặc Finder (macOS) tại đường dẫn đã cho."""
-    path = os.path.abspath(path)  # Chuyển đường dẫn tương đối thành tuyệt đối
+def open_dir(path_dir):
 
-    if platform.system() == "Windows":
-        try:
-            subprocess.run(["explorer", path], check=True)
-        except subprocess.CalledProcessError as e:
-            print(f"Lỗi khi mở File Explorer: {e}")
-        except FileNotFoundError:
-            print("Không tìm thấy ứng dụng Explorer.")
-    elif platform.system() == "Darwin":  # Darwin là tên hệ thống của macOS
-        try:
-            subprocess.run(["open", path], check=True)
-        except subprocess.CalledProcessError as e:
-            print(f"Lỗi khi mở Finder: {e}")
-        except FileNotFoundError:
-            print("Không tìm thấy ứng dụng Open.")
+    folder_path = os.path.dirname(path_dir)
+    print("folder_path: ", folder_path)
+    QDesktopServices.openUrl(QUrl.fromLocalFile(folder_path))
+    # /Volumes/KINGSTON/Dev/python/python.my-manager.v1/repositories/products/re/1/1_0.png
+    if sys.platform == "win32":
+        subprocess.run(["explorer", os.path.dirname(path_dir)], check=True)
+    elif sys.platform == "darwin":
+        subprocess.run(["open", os.path.dirname(path_dir)], check=True)
     else:
-        print(f"Hệ điều hành '{platform.system()}' không được hỗ trợ.")
-
-
-# def open_dir(path_dir):
-
-#     folder_path = os.path.dirname(path_dir)
-#     print("folder_path: ", folder_path)
-#     QDesktopServices.openUrl(QUrl.fromLocalFile(folder_path))
-#     return
-#     # /Volumes/KINGSTON/Dev/python/python.my-manager.v1/repositories/products/re/1/1_0.png
-#     if sys.platform == 'win32':
-#         subprocess.run(["explorer", os.path.dirname(path_dir)], check=True)
-#     elif sys.platform == 'darwin':
-#         subprocess.run(["open", os.path.dirname(path_dir)], check=True)
-#     else:
-#         subprocess.Popen(['xdg-open', os.path.dirname(path_dir)])
+        subprocess.Popen(["xdg-open", os.path.dirname(path_dir)])

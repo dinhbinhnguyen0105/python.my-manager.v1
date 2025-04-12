@@ -550,9 +550,8 @@ class RETemplateService:
                 f"Error fetching from {table_name} with condition [{condition}]: {query.lastError().text()}"
             )
         ids = []
-        if query.next():
+        while query.next():
             ids.append(query.value(0))
-
         return ids
 
     @staticmethod
@@ -591,8 +590,7 @@ class RETemplateService:
             logger.error("Failed to start transaction.")
             return False
         try:
-            set_clause = ", ".join(
-                [f"{key} = :{key}" for key in payload.keys()])
+            set_clause = ", ".join([f"{key} = :{key}" for key in payload.keys()])
             sql = f"""
             UPDATE {table_name}
             SET {set_clause}, updated_at = (strftime('%Y-%m-%d %H:%M:%S', 'now'))
@@ -725,8 +723,7 @@ class REImageDirService:
             logger.error("Failed to start transaction.")
             return False
         try:
-            set_clause = ", ".join(
-                [f"{key} = :{key}" for key in payload.keys()])
+            set_clause = ", ".join([f"{key} = :{key}" for key in payload.keys()])
             sql = f"""
             UPDATE {constants.RE_SETTING_IMG_DIR_TABLE}
             SET {set_clause}, updated_at = (strftime('%Y-%m-%d %H:%M:%S', 'now'))

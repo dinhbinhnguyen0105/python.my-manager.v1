@@ -1,17 +1,16 @@
 # src/views/re_product.py
 import os
 from PyQt6.QtCore import Qt, QPoint, QSortFilterProxyModel, pyqtSignal
-from PyQt6.QtWidgets import (
-    QMessageBox,
-    QWidget,
-    QMenu,
-    QFileDialog
-)
+from PyQt6.QtWidgets import QMessageBox, QWidget, QMenu, QFileDialog
 from PyQt6.QtGui import QAction, QPixmap
 
 from src.ui.re_product_ui import Ui_REProduct
 from src.models.re_model import REProductModel
-from src.controllers.re_controller import REProductController, RESettingController, RETemplateController
+from src.controllers.re_controller import (
+    REProductController,
+    RESettingController,
+    RETemplateController,
+)
 from src.views.dialog_re_product import DialogREProduct
 from src.views.dialog_re_template_settings import DialogRETemplateSetting
 from src.views.dialog_re_product_settings import DialogREProductSetting
@@ -32,7 +31,7 @@ class REProduct(QWidget, Ui_REProduct):
         self.proxy_model = QSortFilterProxyModel()
         self.proxy_model.setSourceModel(self.model)
         self.controller_product = REProductController(self.model)
-
+        self.raw_data = None
         self.setup_ui()
         self.setup_events()
 
@@ -41,10 +40,10 @@ class REProduct(QWidget, Ui_REProduct):
         self.setup_comboboxes()
 
     def setup_comboboxes(self):
-        wards = RESettingController.static_read_all(
-            constants.RE_SETTING_WARDS_TABLE)
+        wards = RESettingController.static_read_all(constants.RE_SETTING_WARDS_TABLE)
         options = RESettingController.static_read_all(
-            constants.RE_SETTING_OPTIONS_TABLE)
+            constants.RE_SETTING_OPTIONS_TABLE
+        )
         categories = RESettingController.static_read_all(
             constants.RE_SETTING_CATEGORIES_TABLE
         )
@@ -55,7 +54,8 @@ class REProduct(QWidget, Ui_REProduct):
             constants.RE_SETTING_FURNITURE_S_TABLE
         )
         legal_s = RESettingController.static_read_all(
-            constants.RE_SETTING_LEGAL_S_TABLE)
+            constants.RE_SETTING_LEGAL_S_TABLE
+        )
 
         for ward in wards:
             name = ward.get("label_vi").capitalize()
@@ -86,12 +86,13 @@ class REProduct(QWidget, Ui_REProduct):
         self.setup_filters()
         self.action_create_btn.clicked.connect(self.handle_create)
         self.action_settings_btn.clicked.connect(self.handle_product_settings)
-        self.action_templates_btn.clicked.connect(
-            self.handle_template_settings)
+        self.action_templates_btn.clicked.connect(self.handle_template_settings)
         self.products_table.selectionModel().selectionChanged.connect(
             self.setup_details
         )
         self.image_label.mousePressEvent = self.image_label_click_event
+        self.action_default_btn.clicked.connect(lambda: self.set_detail_content(True))
+        self.action_random_btn.clicked.connect(lambda: self.set_detail_content(False))
 
     def image_label_click_event(self, event):
         if event.button() == Qt.MouseButton.LeftButton:
@@ -119,20 +120,16 @@ class REProduct(QWidget, Ui_REProduct):
         )
 
         self.options_combobox.currentIndexChanged.connect(
-            lambda: self.apply_column_filter(
-                self.options_combobox.currentData(), 3)
+            lambda: self.apply_column_filter(self.options_combobox.currentData(), 3)
         )
         self.wards_combobox.currentIndexChanged.connect(
-            lambda: self.apply_column_filter(
-                self.wards_combobox.currentData(), 4)
+            lambda: self.apply_column_filter(self.wards_combobox.currentData(), 4)
         )
         self.categories_combobox.currentIndexChanged.connect(
-            lambda: self.apply_column_filter(
-                self.categories_combobox.currentData(), 6)
+            lambda: self.apply_column_filter(self.categories_combobox.currentData(), 6)
         )
         self.legal_s_combobox.currentIndexChanged.connect(
-            lambda: self.apply_column_filter(
-                self.legal_s_combobox.currentData(), 9)
+            lambda: self.apply_column_filter(self.legal_s_combobox.currentData(), 9)
         )
         self.building_line_s_combobox.currentIndexChanged.connect(
             lambda: self.apply_column_filter(
@@ -149,27 +146,36 @@ class REProduct(QWidget, Ui_REProduct):
         id = self.get_selected_id()
         if id is None:
             return
-        raw_data = self.controller_product.read_product(id, raw=True)
+        self.raw_data = self.controller_product.read_product(id, raw=True)
         image_paths = self.controller_product.get_image_paths(id)
-        self.set_default_content(raw_data)
+        self.set_detail_content(True)
         if len(image_paths):
             self.display_image(image_paths[0])
             self.image_clicked.connect(
-                lambda: self.handle_open_image_dir(image_paths[0]))
+                lambda: self.handle_open_image_dir(image_paths[0])
+            )
 
-    def set_default_content(self, data):
+    def set_detail_content(self, default=True):
+        if not self.raw_data:
+            return False
         title_raw = re_product_utils.init_template(
-            constants.RE_TEMPLATE_TITLE_TABLE, data, True)
+            constants.RE_TEMPLATE_TITLE_TABLE, self.raw_data, default
+        )
         description_raw = re_product_utils.init_template(
-            constants.RE_TEMPLATE_DESCRIPTION_TABLE, data, True)
+            constants.RE_TEMPLATE_DESCRIPTION_TABLE, self.raw_data, default
+        )
         footer = re_product_utils.init_footer(
-            data.get("pid"),
-            data.get("updated_at"),
+            self.raw_data.get("pid"),
+            self.raw_data.get("updated_at"),
             title_raw.get("tid"),
             description_raw.get("tid"),
         )
-        self.detail_text.setPlainText(title_raw.get("template").upper() + "\n" + description_raw.get(
-            "template") + footer)
+        self.detail_text.setPlainText(
+            title_raw.get("template").upper()
+            + "\n"
+            + description_raw.get("template")
+            + footer
+        )
 
     def display_image(self, image_path):
         pixmap = QPixmap(image_path)
@@ -185,9 +191,7 @@ class REProduct(QWidget, Ui_REProduct):
             self.image_label.setText("Failed to load image.")
 
     def handle_open_image_dir(self, image_path):
-        dialog = QFileDialog()
-        folder_path = dialog.getExistingDirectory(self, "")
-        if folder_path:
+        if image_path:
             re_product_utils.open_dir(image_path)
 
     def apply_column_filter(self, filter_text, column_index):
@@ -210,10 +214,8 @@ class REProduct(QWidget, Ui_REProduct):
         # self.products_table.resizeColumnsToContents()
         self.products_table.setSortingEnabled(True)
 
-        self.products_table.setContextMenuPolicy(
-            Qt.ContextMenuPolicy.CustomContextMenu)
-        self.products_table.customContextMenuRequested.connect(
-            self.show_context_menu)
+        self.products_table.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
+        self.products_table.customContextMenuRequested.connect(self.show_context_menu)
 
         self.products_table.setColumnHidden(0, True)
         self.products_table.setColumnHidden(10, True)
@@ -288,8 +290,7 @@ class REProduct(QWidget, Ui_REProduct):
             edit_dialog.setAttribute(Qt.WidgetAttribute.WA_DeleteOnClose)
             edit_dialog.setFixedSize(edit_dialog.size())
             edit_dialog.accepted.connect(
-                lambda: self.controller_product.update_product(
-                    id, edit_dialog.fields)
+                lambda: self.controller_product.update_product(id, edit_dialog.fields)
             )
             edit_dialog.exec()
 
@@ -300,15 +301,13 @@ class REProduct(QWidget, Ui_REProduct):
     def handle_template_settings(self):
         template_settings_dialog = DialogRETemplateSetting()
         template_settings_dialog.setWindowTitle("setting template".title())
-        template_settings_dialog.setAttribute(
-            Qt.WidgetAttribute.WA_DeleteOnClose)
+        template_settings_dialog.setAttribute(Qt.WidgetAttribute.WA_DeleteOnClose)
         template_settings_dialog.setFixedSize(template_settings_dialog.size())
         template_settings_dialog.exec()
 
     def handle_product_settings(self):
         product_settings_dialog = DialogREProductSetting()
         product_settings_dialog.setWindowTitle("setting product".title())
-        product_settings_dialog.setAttribute(
-            Qt.WidgetAttribute.WA_DeleteOnClose)
+        product_settings_dialog.setAttribute(Qt.WidgetAttribute.WA_DeleteOnClose)
         product_settings_dialog.setFixedSize(product_settings_dialog.size())
         product_settings_dialog.exec()
