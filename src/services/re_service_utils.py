@@ -1,6 +1,8 @@
 # src/services/re_service_utils.py
 from PyQt6.QtSql import QSqlDatabase, QSqlQuery
-import logging, os, shutil
+import logging
+import os
+import shutil
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -42,16 +44,22 @@ def is_value_existed(table_name, condition):
     query = QSqlQuery(db)
     sql = f"""
 SELECT COUNT(*) FROM {table_name}
-WHERE {list(condition.keys())[0]} = :{list(condition.values())[0]}
+WHERE {list(condition.keys())[0]} = "{list(condition.values())[0]}"
 """
     if not query.prepare(sql):
-        logger.error(query.lastError().text())
+        logger.error(f"ERROR: {query.lastError().text()}", exc_info=True)
         return False
     if not exec_query(db, query):
         return False
     if query.next():
         return query.value(0) > 0
     return False
+
+
+# except Exception as e:
+#     db.rollback()
+#     logger.error(f"ERROR: {e}", exc_info=True)
+#     return False
 
 
 def get_columns(table_name):

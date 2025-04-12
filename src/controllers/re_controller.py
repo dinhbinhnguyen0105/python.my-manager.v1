@@ -78,6 +78,7 @@ class REProductController(QObject):
             if len(payload.get("image_paths")) < 1:
                 QMessageBox.critical(None, "Error", "Invalid images.")
                 return False
+            print("passed!")
             if REProductService.create(payload):
                 self.model.select()
                 QMessageBox.information(
@@ -89,7 +90,6 @@ class REProductController(QObject):
                     None, "Error", "Failed to create new real estate product."
                 )
                 return False
-
         except Exception as e:
             QMessageBox.critical(None, "Error", str(e))
             return False
@@ -159,6 +159,14 @@ class REProductController(QObject):
     def get_columns():
         return re_controller_utils.get_columns()
 
+    @staticmethod
+    def generate_pid(option):
+        return re_controller_utils.generate_pid(option)
+
+    @staticmethod
+    def validate_new_product(fields):
+        return re_controller_utils.validate_new_product(fields)
+
 
 class RESettingController(QObject):
     def __init__(self, table_name, parent=None):
@@ -166,7 +174,7 @@ class RESettingController(QObject):
         self.table_name = table_name
         self.model = BaseSettingModel(self.table_name)
 
-    def add_new(self, payload):
+    def create_new(self, payload):
         try:
             if RESettingService.create(self.table_name, payload):
                 self.model.select()
@@ -211,9 +219,18 @@ class RESettingController(QObject):
             error_msg = f"Error deleting record: {e}"
             QMessageBox.critical(None, "Error", error_msg)
 
-    def get_all(self):
+    def read_all(self):
         try:
             return RESettingService.read_all(self.table_name)
+        except Exception as e:
+            error_msg = f"Error fetching all records: {e}"
+            QMessageBox.critical(None, "Error", error_msg)
+            return []
+
+    @staticmethod
+    def static_read_all(table_name):
+        try:
+            return RESettingService.read_all(table_name)
         except Exception as e:
             error_msg = f"Error fetching all records: {e}"
             QMessageBox.critical(None, "Error", error_msg)
@@ -303,7 +320,7 @@ class REImageDirController(QObject):
 
     def read_all(self):
         try:
-            return REImageDirService.read_all(self.table_name)
+            return REImageDirService.read_all()
         except Exception as e:
             error_msg = f"Error fetching all records: {e}"
             QMessageBox.critical(None, "Error", error_msg)

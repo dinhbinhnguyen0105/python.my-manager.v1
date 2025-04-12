@@ -56,7 +56,7 @@ def generate_tid(table_name):
 
 
 def validate_new_product(data):
-    if not data.get("pid") or not re_service_utils.is_value_existed(constants.RE_PRODUCT_TABLE, {"pid": data.get("pid")}):
+    if not data.get("pid") or re_service_utils.is_value_existed(constants.RE_PRODUCT_TABLE, {"pid": data.get("pid")}):
         QMessageBox.critical(None, "Error", "Invalid pid.")
         return False
     if (
@@ -68,49 +68,49 @@ def validate_new_product(data):
             None, "Error", "Area, structure, and price must be numbers."
         )
         return False
-    if re_service_utils.is_value_existed(
+    if not re_service_utils.is_value_existed(
         constants.RE_SETTING_STATUSES_TABLE, {"id": data.get("status_id")}
     ):
         QMessageBox.critical(None, "Error", "Invalid status selected.")
         return False
-    if re_service_utils.is_value_existed(
+    if not re_service_utils.is_value_existed(
         constants.RE_SETTING_PROVINCES_TABLE, {"id": data.get("province_id")}
     ):
         QMessageBox.critical(None, "Error", "Invalid province selected.")
         return False
-    if re_service_utils.is_value_existed(
+    if not re_service_utils.is_value_existed(
         constants.RE_SETTING_DISTRICTS_TABLE, {"id": data.get("district_id")}
     ):
         QMessageBox.critical(None, "Error", "Invalid district selected.")
         return False
-    if re_service_utils.is_value_existed(
+    if not re_service_utils.is_value_existed(
         constants.RE_SETTING_WARDS_TABLE, {"id": data.get("ward_id")}
     ):
         QMessageBox.critical(None, "Error", "Invalid ward selected.")
         return False
-    if re_service_utils.is_value_existed(
+    if not re_service_utils.is_value_existed(
         constants.RE_SETTING_OPTIONS_TABLE, {"id": data.get("option_id")}
     ):
         QMessageBox.critical(None, "Error", "Invalid option selected.")
         return False
-    if re_service_utils.is_value_existed(
+    if not re_service_utils.is_value_existed(
         constants.RE_SETTING_CATEGORIES_TABLE, {"id": data.get("category_id")}
     ):
         QMessageBox.critical(None, "Error", "Invalid category selected.")
         return False
-    if re_service_utils.is_value_existed(
+    if not re_service_utils.is_value_existed(
         constants.RE_SETTING_BUILDING_LINE_S_TABLE,
         {"id": data.get("building_line_id")},
     ):
         QMessageBox.critical(None, "Error", "Invalid building_line selected.")
         return False
-    if re_service_utils.is_value_existed(
+    if not re_service_utils.is_value_existed(
         constants.RE_SETTING_FURNITURE_S_TABLE,
         {"id": data.get("furniture_id")},
     ):
         QMessageBox.critical(None, "Error", "Invalid furniture selected.")
         return False
-    if re_service_utils.is_value_existed(
+    if not re_service_utils.is_value_existed(
         constants.RE_SETTING_LEGAL_S_TABLE, {"id": data.get("legal_id")}
     ):
         QMessageBox.critical(None, "Error", "Invalid legal selected.")
@@ -119,7 +119,7 @@ def validate_new_product(data):
 
 
 def get_image_path(record_id):
-    img_row = REImageDirService.read({"is_selected", 1})
+    img_row = REImageDirService.read({"is_selected": 1})
     img_dir = os.path.join(img_row.get("value"), str(record_id))
     return re_service_utils.get_images_in_directory(img_dir)
 

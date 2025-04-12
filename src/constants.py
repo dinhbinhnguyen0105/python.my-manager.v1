@@ -273,4 +273,25 @@ RE_SETTING_LEGAL_S = [
     {"label_vi": "đầy đủ nội thất", "label_en": "full", "value": "full"},
 ]
 
-RE_SETTING_IMG_DIR = [{"value": os.path.join("repositories", "products", "re")}]
+RE_SETTING_IMG_DIR = [
+    {"value": os.path.join("repositories", "products", "re")}]
+
+RE_PRODUCT_INIT_VALUE = {
+    "image_paths": [],
+    "pid": "",
+    "street": "",
+    "status_id": -1,
+    "province_id": -1,
+    "district_id": -1,
+    "ward_id": -1,
+    "option_id": -1,
+    "category_id": -1,
+    "building_line_id": -1,
+    "furniture_id": -1,
+    "legal_id": -1,
+    "area": 0.0,
+    "structure": 0.0,
+    "function": "",
+    "description": "",
+    "price": 0.0,
+}

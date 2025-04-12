@@ -145,6 +145,8 @@ JOIN {constants.RE_SETTING_LEGAL_S_TABLE} legal_s ON main.legal_id = legal_s.id
             INSERT INTO {constants.RE_PRODUCT_TABLE} ({columns})
             VALUES ({placeholders})
             """
+            print(payload)
+            print(sql)
             query = QSqlQuery(db)
             if not query.prepare(sql):
                 logger.error(query.lastError().text())
