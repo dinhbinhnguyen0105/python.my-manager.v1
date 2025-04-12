@@ -16,7 +16,6 @@ def init_template(table_name, raw_data, default=True):
         controller_template = RETemplateController(
             constants.RE_TEMPLATE_DESCRIPTION_TABLE
         )
-
     if default:
         template_raw = controller_template.read(0)
     else:
@@ -47,12 +46,11 @@ def init_footer(pid, updated_at, title_info, description_info):
 
 def _relay_keyword(raw_data, template: str):
     keyword_values = _get_value(raw_data)
-
     if keyword_values.get("option").get("value") == "sell":
         raw_data.setdefault("unit", "tỷ")
     elif (
-        raw_data.get("option").get("value") == "rent"
-        or raw_data.get("option").get("value") == "assignment"
+        keyword_values.get("option").get("value") == "rent"
+        or keyword_values.get("option").get("value") == "assignment"
     ):
         raw_data.setdefault("unit", "triệu/tháng")
 

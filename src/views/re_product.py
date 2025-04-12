@@ -252,7 +252,7 @@ class REProduct(QWidget, Ui_REProduct):
         return None
 
     def handle_create(self):
-        create_dialog = DialogREProduct()
+        create_dialog = DialogREProduct(constants.RE_PRODUCT_INIT_VALUE)
         create_dialog.setWindowTitle("Create Product")
         create_dialog.setAttribute(Qt.WidgetAttribute.WA_DeleteOnClose)
         create_dialog.setFixedSize(create_dialog.size())
