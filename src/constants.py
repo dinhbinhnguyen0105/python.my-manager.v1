@@ -254,7 +254,7 @@ RE_SETTING_BUILDING_LINE_S = [
     {"label_vi": "đường xe hơi", "label_en": "big road", "value": "big_road"},
     {"label_vi": "đường xe máy", "label_en": "small road", "value": "small_road"},
 ]
-RE_SETTING_FURNITURE_S = [
+RE_SETTING_LEGAL_S = [
     {"label_vi": "giấy tờ tay", "label_en": "none", "value": "none"},
     {"label_vi": "sổ nông nghiệp chung", "label_en": "snnc", "value": "snnc"},
     {
@@ -267,7 +267,7 @@ RE_SETTING_FURNITURE_S = [
     {"label_vi": "sổ xây dựng phân quyền", "label_en": "sxdpq", "value": "sxdpq"},
     {"label_vi": "sổ xây dựng riêng", "label_en": "sxdr", "value": "sxdr"},
 ]
-RE_SETTING_LEGAL_S = [
+RE_SETTING_FURNITURE_S = [
     {"label_vi": "không nội thất", "label_en": "none", "value": "none"},
     {"label_vi": "nội thất cơ bản", "label_en": "basic", "value": "basic"},
     {"label_vi": "đầy đủ nội thất", "label_en": "full", "value": "full"},

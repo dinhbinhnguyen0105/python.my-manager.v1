@@ -56,6 +56,7 @@ def generate_tid(table_name):
 
 
 def validate_new_product(data):
+    print(data)
     if not data.get("pid") or re_service_utils.is_value_existed(constants.RE_PRODUCT_TABLE, {"pid": data.get("pid")}):
         QMessageBox.critical(None, "Error", "Invalid pid.")
         return False
@@ -121,7 +122,7 @@ def validate_new_product(data):
 def get_image_path(record_id):
     img_row = REImageDirService.read({"is_selected": 1})
     img_dir = os.path.join(img_row.get("value"), str(record_id))
-    return re_service_utils.get_images_in_directory(img_dir)
+    return re_service_utils.get_images_in_directory(os.path.abspath(img_dir))
 
 
 def get_columns():

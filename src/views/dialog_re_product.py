@@ -19,11 +19,11 @@ class DialogREProduct(QDialog, Ui_Dialog_REProduct):
         self.districts_combobox.setDisabled(True)
         self.controller_settings = None
         self._setupImageDrop()
-        self._connect_signals()
+        self.set_evens()
         self._initialize_option_radios()
         self._load_initial_data()
 
-    def _connect_signals(self):
+    def set_evens(self):
         self.pid_input.textChanged.connect(
             lambda: self.set_field("pid", self.pid_input.text()))
         self.street_input.textChanged.connect(
@@ -54,7 +54,7 @@ class DialogREProduct(QDialog, Ui_Dialog_REProduct):
             lambda: self.set_field("furniture_id", self.furniture_s_combobox.currentData()))
         self.legal_s_combobox.currentIndexChanged.connect(
             lambda: self.set_field("legal_id", self.legal_s_combobox.currentData()))
-
+        # self.
         self.buttonBox.accepted.disconnect()
         self.btn_save = self.buttonBox.button(
             QDialogButtonBox.StandardButton.Save)
@@ -145,8 +145,6 @@ class DialogREProduct(QDialog, Ui_Dialog_REProduct):
             self.legal_s_combobox, constants.RE_SETTING_LEGAL_S_TABLE, self.fields.get("legal"))
 
     def set_field(self, field, value):
-        if not value:
-            return False
         if isinstance(value, str):
             float_val = str_to_float(value)
             self.fields[field] = float_val if float_val is not False else value.strip(

@@ -33,7 +33,8 @@ def initialize_re_db():
     except Exception as e:
         if db.isOpen():
             db.rollback()
-        logger.error(f"Database initialization failed: {str(e)}", exc_info=True)
+        logger.error(
+            f"Database initialization failed: {str(e)}", exc_info=True)
         return False
 
 
@@ -187,7 +188,8 @@ created_at TEXT DEFAULT (strftime('%Y-%m-%d %H:%M:%S', 'now'))
 )
 """
     if not query.exec(sql):
-        logger.error(f"Error creating table '{table_name}': {query.lastError().text()}")
+        logger.error(
+            f"Error creating table '{table_name}': {query.lastError().text()}")
         return False
     return True
 
@@ -276,13 +278,14 @@ VALUES (:id, :tid, :option_id, :value)
 def _seed_dep(db: QSqlDatabase, table_name, payload):
     query = QSqlQuery(db)
     sql = f"""
-INSERT OR IGNORE INTO {table_name} (label_vi, label_en, value)
-VALUES (:label_vi, :label_en, :value)
+INSERT OR IGNORE INTO {table_name} (id, label_vi, label_en, value)
+VALUES (:id, :label_vi, :label_en, :value)
 """
     if not query.prepare(sql):
         logger.error(query.lastError().text())
         return False
-    for field in payload:
+    for index, field in enumerate(payload):
+        query.bindValue(":id", index)
         query.bindValue(":label_vi", field.get("label_vi", ""))
         query.bindValue(":label_en", field.get("label_en", ""))
         query.bindValue(":value", field.get("value", ""))

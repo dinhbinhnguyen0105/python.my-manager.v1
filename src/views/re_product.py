@@ -1,12 +1,13 @@
 # src/views/re_product.py
-from random import randint
-from PyQt6.QtCore import Qt, QPoint, QSortFilterProxyModel, QRegularExpression
+import os
+from PyQt6.QtCore import Qt, QPoint, QSortFilterProxyModel, pyqtSignal
 from PyQt6.QtWidgets import (
     QMessageBox,
     QWidget,
     QMenu,
+    QFileDialog
 )
-from PyQt6.QtGui import QAction
+from PyQt6.QtGui import QAction, QPixmap
 
 from src.ui.re_product_ui import Ui_REProduct
 from src.models.re_model import REProductModel
@@ -14,10 +15,13 @@ from src.controllers.re_controller import REProductController, RESettingControll
 from src.views.dialog_re_product import DialogREProduct
 from src.views.dialog_re_template_settings import DialogRETemplateSetting
 from src.views.dialog_re_product_settings import DialogREProductSetting
+from src.utils import re_product as re_product_utils
 from src import constants
 
 
 class REProduct(QWidget, Ui_REProduct):
+    image_clicked = pyqtSignal()
+
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setupUi(self)
@@ -87,6 +91,12 @@ class REProduct(QWidget, Ui_REProduct):
         self.products_table.selectionModel().selectionChanged.connect(
             self.setup_details
         )
+        self.image_label.mousePressEvent = self.image_label_click_event
+
+    def image_label_click_event(self, event):
+        if event.button() == Qt.MouseButton.LeftButton:
+            self.image_clicked.emit()
+        super().mousePressEvent(event)
 
     def setup_filters(self):
         self.pid_input.textChanged.connect(
@@ -139,41 +149,46 @@ class REProduct(QWidget, Ui_REProduct):
         id = self.get_selected_id()
         if id is None:
             return
-        data = self.controller_product.read_product(id)
-        # image_paths = self.controller_product.get_image_paths(id)
-        self.set_default_content(data)
+        raw_data = self.controller_product.read_product(id, raw=True)
+        image_paths = self.controller_product.get_image_paths(id)
+        self.set_default_content(raw_data)
+        if len(image_paths):
+            self.display_image(image_paths[0])
+            self.image_clicked.connect(
+                lambda: self.handle_open_image_dir(image_paths[0]))
 
     def set_default_content(self, data):
-        # template_controller = RETemplateController()
-        # title_default = RETemplateController.get(
-        #     constants.RE_TEMPLATE_TITLE_TABLE, 0)
-        # description_default = RETemplateController.get(
-        #     constants.RE_TEMPLATE_DESCRIPTION_TABLE, 0)
+        title_raw = re_product_utils.init_template(
+            constants.RE_TEMPLATE_TITLE_TABLE, data, True)
+        description_raw = re_product_utils.init_template(
+            constants.RE_TEMPLATE_DESCRIPTION_TABLE, data, True)
+        footer = re_product_utils.init_footer(
+            data.get("pid"),
+            data.get("updated_at"),
+            title_raw.get("tid"),
+            description_raw.get("tid"),
+        )
+        self.detail_text.setPlainText(title_raw.get("template").upper() + "\n" + description_raw.get(
+            "template") + footer)
 
-        # data.get("option")
-        print(data)
+    def display_image(self, image_path):
+        pixmap = QPixmap(image_path)
+        if not pixmap.isNull():
+            self.image_label.setPixmap(
+                pixmap.scaled(
+                    self.image_label.size(),
+                    Qt.AspectRatioMode.KeepAspectRatio,
+                    Qt.TransformationMode.SmoothTransformation,
+                )
+            )
+        else:
+            self.image_label.setText("Failed to load image.")
 
-        self.init_product_title(data, False)
-
-    def init_product_title(self, data, is_default=True):
-        if data.get("option") == "bán":
-            data.setdefault("option", "tỷ")
-        # self.template_controller = RETemplateController(
-        #     constants.RE_TEMPLATE_TITLE_TABLE)
-        # if is_default:
-        #     title_template = RETemplateController.get(
-        #         constants.RE_TEMPLATE_TITLE_TABLE, 0)
-        # else:
-        #     title_template_ids = RETemplateController.get_ids(
-        #         constants.RE_TEMPLATE_TITLE_TABLE)
-        #     title_template = RETemplateController.get(
-        #         constants.RE_TEMPLATE_TITLE_TABLE,
-        #         title_template_ids[randint(0, len(title_template_ids) - 1)]
-        #     )
-        # print(RETemplateController.get_ids(
-        #     constants.RE_TEMPLATE_TITLE_TABLE, 2))
-
-        return
+    def handle_open_image_dir(self, image_path):
+        dialog = QFileDialog()
+        folder_path = dialog.getExistingDirectory(self, "")
+        if folder_path:
+            re_product_utils.open_dir(image_path)
 
     def apply_column_filter(self, filter_text, column_index):
         if (

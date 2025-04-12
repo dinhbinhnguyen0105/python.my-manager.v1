@@ -40,7 +40,9 @@ options.label_vi AS option,
 categories.label_vi AS category,
 building_line_s.label_vi AS building_line,
 furniture_s.label_vi AS furniture,
-legal_s.label_vi AS legal
+legal_s.label_vi AS legal,
+main.created_at,
+main.updated_at
 FROM {constants.RE_PRODUCT_TABLE} main
 JOIN {constants.RE_SETTING_STATUSES_TABLE} statuses ON main.status_id = statuses.id
 JOIN {constants.RE_SETTING_PROVINCES_TABLE} provinces ON main.province_id = provinces.id
@@ -51,6 +53,51 @@ JOIN {constants.RE_SETTING_CATEGORIES_TABLE} categories ON main.category_id = ca
 JOIN {constants.RE_SETTING_BUILDING_LINE_S_TABLE} building_line_s ON main.building_line_id = building_line_s.id
 JOIN {constants.RE_SETTING_FURNITURE_S_TABLE} furniture_s ON main.furniture_id = furniture_s.id
 JOIN {constants.RE_SETTING_LEGAL_S_TABLE} legal_s ON main.legal_id = legal_s.id
+WHERE main.id=:id
+"""
+        if not query.prepare(sql):
+            logger.error(query.lastError().text())
+            return False
+        query.bindValue(":id", record_id)
+        if not exec_query(db, query):
+            return None
+        if query.next():
+            record = query.record()
+            data = {}
+            for i in range(record.count()):
+                field_name = record.fieldName(i)
+                field_value = record.value(i)
+                data[field_name] = field_value
+            return data
+        return None
+
+    @staticmethod
+    def read_raw(record_id):
+        db = QSqlDatabase.database()
+        query = QSqlQuery(db)
+        sql = f"""
+SELECT 
+main.id,
+main.pid,
+main.street,
+main.area,
+main.structure,
+main.function,
+main.description,
+main.price,
+main.updated_at,
+main.status_id,
+main.province_id,
+main.district_id,
+main.ward_id,
+main.option_id,
+main.category_id,
+main.building_line_id,
+main.furniture_id,
+main.legal_id,
+main.created_at,
+main.updated_at
+FROM {constants.RE_PRODUCT_TABLE} main
 WHERE main.id=:id
 """
         if not query.prepare(sql):
@@ -454,6 +501,59 @@ class RETemplateService:
                 row[query.record().fieldName(i)] = query.value(i)
             results.append(row)
         return results
+
+    # def read_all(table_name, condition=None, language="vi"):
+    #     db = QSqlDatabase.database()
+    #     query = QSqlQuery(db)
+    #     if condition:
+    #         condition_key = condition.keys()[0]
+    #         condition_value = condition.values()[0]
+    #         where_sql = f"WHERE '{condition_key}' = '{condition_value}'"
+    #     sql = f"""
+    #     SELECT
+    #         main.id AS id,
+    #         main.tid AS tid,
+    #         options.id AS option_id,
+    #         {"options.label_vi AS option_label" if language == "vi" else "options.label_en AS option_label"},
+    #         options.value AS option_value,
+    #         main.value AS value,
+    #         main.updated_at AS updated_at
+    #     FROM {table_name} main
+    #     JOIN {constants.RE_SETTING_OPTIONS_TABLE} options ON main.option_id = options.id
+    #     {where_sql if condition else ""}
+    #     """
+    #     if not query.prepare(sql):
+    #         logger.error(query.lastError().text())
+    #         return False
+    #     if not exec_query(db, query):
+    #         return []
+    #     results = []
+    #     while query.next():
+    #         row = {}
+    #         for i in range(query.record().count()):
+    #             row[query.record().fieldName(i)] = query.value(i)
+    #         results.append(row)
+    #     return results
+
+    @staticmethod
+    def get_ids_by_condition(table_name, condition):
+        db = QSqlDatabase.database()
+        query = QSqlQuery(db)
+        query.prepare(
+            f"""
+            SELECT id FROM {table_name}
+            WHERE {list(condition.keys())[0]}="{list(condition.values())[0]}"
+        """
+        )
+        if not query.exec():
+            raise Exception(
+                f"Error fetching from {table_name} with condition [{condition}]: {query.lastError().text()}"
+            )
+        ids = []
+        if query.next():
+            ids.append(query.value(0))
+
+        return ids
 
     @staticmethod
     def create(table_name, payload):

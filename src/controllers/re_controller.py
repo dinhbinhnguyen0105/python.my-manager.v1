@@ -94,9 +94,12 @@ class REProductController(QObject):
             QMessageBox.critical(None, "Error", str(e))
             return False
 
-    def read_product(self, record_id):
+    def read_product(self, record_id, raw=False):
         try:
-            product = REProductService.read(record_id)
+            if not raw:
+                product = REProductService.read(record_id)
+            else:
+                product = REProductService.read_raw(record_id)
             if not product:
                 QMessageBox.warning(None, "Warning", "Product not found.")
             return product
@@ -236,6 +239,15 @@ class RESettingController(QObject):
             QMessageBox.critical(None, "Error", error_msg)
             return []
 
+    @staticmethod
+    def static_read(table_name, id):
+        try:
+            return RESettingService.read(table_name, id)
+        except Exception as e:
+            error_msg = f"Error fetching record: {e}"
+            QMessageBox.critical(None, "Error", error_msg)
+            return []
+
 
 class RETemplateController(QObject):
     def __init__(self, table_name, parent=None):
@@ -302,6 +314,9 @@ class RETemplateController(QObject):
 
     def generate_tid(self):
         return re_controller_utils.generate_tid(self.table_name)
+
+    def get_ids_by_condition(self, condition):
+        return RETemplateService.get_ids_by_condition(self.table_name, condition)
 
 
 class REImageDirController(QObject):
