@@ -134,11 +134,8 @@ def _get_value(data):
 
 
 def open_dir(path_dir):
-
     folder_path = os.path.dirname(path_dir)
-    print("folder_path: ", folder_path)
     QDesktopServices.openUrl(QUrl.fromLocalFile(folder_path))
-    # /Volumes/KINGSTON/Dev/python/python.my-manager.v1/repositories/products/re/1/1_0.png
     if sys.platform == "win32":
         subprocess.run(["explorer", os.path.dirname(path_dir)], check=True)
     elif sys.platform == "darwin":
