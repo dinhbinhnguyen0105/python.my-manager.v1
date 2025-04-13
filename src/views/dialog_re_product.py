@@ -1,7 +1,7 @@
 # src/views/dialog_re_product.py
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QDragEnterEvent, QDropEvent, QPixmap
-from PyQt6.QtWidgets import QDialog, QMessageBox, QDialogButtonBox
+from PyQt6.QtWidgets import QDialog, QDialogButtonBox
 from src import constants
 from src.controllers.re_controller import REProductController, RESettingController
 from src.ui.dialog_re_product_ui import Ui_Dialog_REProduct

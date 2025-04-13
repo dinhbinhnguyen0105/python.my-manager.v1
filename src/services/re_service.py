@@ -1,25 +1,21 @@
 # src/services/re_service.py
-import logging
 import os
 from PyQt6.QtSql import QSqlQuery, QSqlDatabase
 
 from src import constants
-from .re_service_utils import (
+from .service_utils import (
     exec_query,
     commit_db,
     is_affected,
-    get_columns,
     copy_files,
-    is_value_existed,
+    error
 )
-
-logger = logging.getLogger(__name__)
 
 
 class REProductService:
     @staticmethod
     def read(record_id):
-        db = QSqlDatabase.database()
+        db = QSqlDatabase.database("re_connection")
         query = QSqlQuery(db)
         sql = f"""
 SELECT 
@@ -56,7 +52,7 @@ JOIN {constants.RE_SETTING_LEGAL_S_TABLE} legal_s ON main.legal_id = legal_s.id
 WHERE main.id=:id
 """
         if not query.prepare(sql):
-            logger.error(query.lastError().text())
+            error(query.lastError().text())
             return False
         query.bindValue(":id", record_id)
         if not exec_query(db, query):
@@ -73,7 +69,7 @@ WHERE main.id=:id
 
     @staticmethod
     def read_raw(record_id):
-        db = QSqlDatabase.database()
+        db = QSqlDatabase.database("re_connection")
         query = QSqlQuery(db)
         sql = f"""
 SELECT 
@@ -101,7 +97,7 @@ FROM {constants.RE_PRODUCT_TABLE} main
 WHERE main.id=:id
 """
         if not query.prepare(sql):
-            logger.error(query.lastError().text())
+            error(query.lastError().text())
             return False
         query.bindValue(":id", record_id)
         if not exec_query(db, query):
@@ -118,7 +114,7 @@ WHERE main.id=:id
 
     @staticmethod
     def read_all():
-        db = QSqlDatabase.database()
+        db = QSqlDatabase.database("re_connection")
         query = QSqlQuery(db)
         sql = f"""
 SELECT 
@@ -152,7 +148,7 @@ JOIN {constants.RE_SETTING_FURNITURE_S_TABLE} furniture_s ON main.furniture_id =
 JOIN {constants.RE_SETTING_LEGAL_S_TABLE} legal_s ON main.legal_id = legal_s.id
 """
         if not query.prepare(sql):
-            logger.error(query.lastError().text())
+            error(query.lastError().text())
             return False
         if not exec_query(db, query):
             return None
@@ -169,23 +165,23 @@ JOIN {constants.RE_SETTING_LEGAL_S_TABLE} legal_s ON main.legal_id = legal_s.id
 
     @staticmethod
     def create(payload):
-        db = QSqlDatabase.database()
+        db = QSqlDatabase.database("re_connection")
         if not db.transaction():
-            logger.error("Failed to start transaction.")
+            error("Failed to start transaction.")
         query = QSqlQuery(db)
         try:
             columns = ", ".join(
                 [
                     column
                     for column in payload.keys()
-                    if column in get_columns(constants.RE_PRODUCT_TABLE)
+                    if column in REProductService.get_columns(constants.RE_PRODUCT_TABLE)
                 ]
             )
             placeholders = ", ".join(
                 [
                     f":{key}"
                     for key in payload.keys()
-                    if key in get_columns(constants.RE_PRODUCT_TABLE)
+                    if key in REProductService.get_columns(constants.RE_PRODUCT_TABLE)
                 ]
             )
             sql = f"""
@@ -194,7 +190,7 @@ JOIN {constants.RE_SETTING_LEGAL_S_TABLE} legal_s ON main.legal_id = legal_s.id
             """
             query = QSqlQuery(db)
             if not query.prepare(sql):
-                logger.error(query.lastError().text())
+                error(query.lastError().text())
                 return False
 
             for key, value in payload.items():
@@ -203,7 +199,7 @@ JOIN {constants.RE_SETTING_LEGAL_S_TABLE} legal_s ON main.legal_id = legal_s.id
             img_record = REImageDirService.read({"is_selected": 1})
             if not img_record:
                 db.rollback()
-                logger.error("Image dir path is undefined.")
+                error("Image dir path is undefined.")
                 return False
 
             if not exec_query(db, query):
@@ -218,7 +214,7 @@ JOIN {constants.RE_SETTING_LEGAL_S_TABLE} legal_s ON main.legal_id = legal_s.id
                     current_id = current_id_query.value(0)
             else:
                 db.rollback()
-                logger.error(
+                error(
                     f"Error get the ID of the latest record: {current_id_query.lastError().text()}"
                 )
                 return False
@@ -231,18 +227,18 @@ JOIN {constants.RE_SETTING_LEGAL_S_TABLE} legal_s ON main.legal_id = legal_s.id
             return True
         except Exception as e:
             db.rollback()
-            logger.error(f"ERROR: {e}", exc_info=True)
+            error(f"ERROR: {e}")
             return False
 
     @staticmethod
     def update(record_id, payload):
-        db = QSqlDatabase.database()
+        db = QSqlDatabase.database("re_connection")
         if not db.transaction():
-            logger.error("Failed to start transaction.")
+            error("Failed to start transaction.")
         query = QSqlQuery(db)
         try:
             sql_parts = []
-            columns = get_columns(constants.RE_PRODUCT_TABLE)
+            columns = REProductService.get_columns(constants.RE_PRODUCT_TABLE)
             for key in columns:
                 if key != "id":
                     if key in payload.keys():
@@ -253,7 +249,7 @@ JOIN {constants.RE_SETTING_LEGAL_S_TABLE} legal_s ON main.legal_id = legal_s.id
             WHERE id=:id
             """
             if not query.prepare(sql):
-                logger.error(query.lastError().text())
+                error(query.lastError().text())
                 return False
             for key in columns:
                 if key != "id":
@@ -268,14 +264,14 @@ JOIN {constants.RE_SETTING_LEGAL_S_TABLE} legal_s ON main.legal_id = legal_s.id
             return True
         except Exception as e:
             db.rollback()
-            logger.error(f"ERROR: {e}", exc_info=True)
+            error(f"ERROR: {e}")
             return False
 
     @staticmethod
     def delete(record_id):
-        db = QSqlDatabase.database()
+        db = QSqlDatabase.database("re_connection")
         if not db.transaction():
-            logger.error("Failed to start transaction.")
+            error("Failed to start transaction.")
         query = QSqlQuery(db)
         try:
             sql = f"""
@@ -284,7 +280,7 @@ JOIN {constants.RE_SETTING_LEGAL_S_TABLE} legal_s ON main.legal_id = legal_s.id
             """
             query = QSqlQuery(db)
             if not query.prepare(sql):
-                logger.error(query.lastError().text())
+                error(query.lastError().text())
                 return False
             query.bindValue(":id", record_id)
             if not exec_query(db, query):
@@ -295,18 +291,35 @@ JOIN {constants.RE_SETTING_LEGAL_S_TABLE} legal_s ON main.legal_id = legal_s.id
             return True
         except Exception as e:
             db.rollback()
-            logger.error(f"ERROR: {e}", exc_info=True)
+            error(f"ERROR: {e}")
             return False
 
     @staticmethod
     def is_pid_existed(pid):
-        return is_value_existed(constants.RE_PRODUCT_TABLE, {"pid": pid})
+        return REProductService.is_value_existed(constants.RE_PRODUCT_TABLE, {"pid": pid})
+
+    @staticmethod
+    def is_value_existed(table_name, condition):
+        db = QSqlDatabase.database()
+        query = QSqlQuery(db)
+        sql = f"""
+    SELECT COUNT(*) FROM {table_name}
+    WHERE {list(condition.keys())[0]} = "{list(condition.values())[0]}"
+    """
+        if not query.prepare(sql):
+            error(f"ERROR: {query.lastError().text()}")
+            return False
+        if not exec_query(db, query):
+            return False
+        if query.next():
+            return query.value(0) > 0
+        return False
 
 
 class RESettingService:
     @staticmethod
     def read(table_name, record_id):
-        db = QSqlDatabase.database()
+        db = QSqlDatabase.database("re_connection")
         query = QSqlQuery(db)
         sql = f"""
         SELECT id, label_vi, label_en, value, updated_at
@@ -314,7 +327,7 @@ class RESettingService:
         WHERE id = :id
         """
         if not query.prepare(sql):
-            logger.error(query.lastError().text())
+            error(query.lastError().text())
             return False
         query.bindValue(":id", record_id)
         if not exec_query(db, query):
@@ -328,14 +341,14 @@ class RESettingService:
 
     @staticmethod
     def read_all(table_name):
-        db = QSqlDatabase.database()
+        db = QSqlDatabase.database("re_connection")
         query = QSqlQuery(db)
         sql = f"""
         SELECT id, label_vi, label_en, value, updated_at
         FROM {table_name}
         """
         if not query.prepare(sql):
-            logger.error(query.lastError().text())
+            error(query.lastError().text())
             return False
         if not exec_query(db, query):
             return []
@@ -349,9 +362,9 @@ class RESettingService:
 
     @staticmethod
     def create(table_name, payload):
-        db = QSqlDatabase.database()
+        db = QSqlDatabase.database("re_connection")
         if not db.transaction():
-            logger.error("Failed to start transaction.")
+            error("Failed to start transaction.")
             return False
         try:
             columns = ", ".join(payload.keys())
@@ -362,7 +375,7 @@ class RESettingService:
             """
             query = QSqlQuery(db)
             if not query.prepare(sql):
-                logger.error(query.lastError().text())
+                error(query.lastError().text())
                 return False
             for key, value in payload.items():
                 query.bindValue(f":{key}", value)
@@ -375,14 +388,14 @@ class RESettingService:
             return True
         except Exception as e:
             db.rollback()
-            logger.error(f"ERROR: {e}", exc_info=True)
+            error(f"ERROR: {e}")
             return False
 
     @staticmethod
     def update(table_name, record_id, payload):
-        db = QSqlDatabase.database()
+        db = QSqlDatabase.database("re_connection")
         if not db.transaction():
-            logger.error("Failed to start transaction.")
+            error("Failed to start transaction.")
             return False
         try:
             sql_parts = []
@@ -397,7 +410,7 @@ class RESettingService:
             payload["id"] = record_id
             query = QSqlQuery(db)
             if not query.prepare(sql):
-                logger.error(query.lastError().text())
+                error(query.lastError().text())
                 return False
             for key, value in payload.items():
                 query.bindValue(f":{key}", value)
@@ -409,14 +422,14 @@ class RESettingService:
             return True
         except Exception as e:
             db.rollback()
-            logger.error(f"ERROR: {e}", exc_info=True)
+            error(f"ERROR: {e}")
             return False
 
     @staticmethod
     def delete(table_name, record_id):
-        db = QSqlDatabase.database()
+        db = QSqlDatabase.database("re_connection")
         if not db.transaction():
-            logger.error("Failed to start transaction.")
+            error("Failed to start transaction.")
             return False
         try:
             sql = f"""
@@ -425,7 +438,7 @@ class RESettingService:
             """
             query = QSqlQuery(db)
             if not query.prepare(sql):
-                logger.error(query.lastError().text())
+                error(query.lastError().text())
                 return False
             query.bindValue(":id", record_id)
             if not exec_query(db, query):
@@ -436,14 +449,44 @@ class RESettingService:
             return True
         except Exception as e:
             db.rollback()
-            logger.error(f"ERROR: {e}", exc_info=True)
+            error(f"ERROR: {e}")
             return False
+
+    @staticmethod
+    def get_columns(table_name):
+        db = QSqlDatabase.database("re_connection")
+        record = db.record(table_name)
+        if record.isEmpty():
+            print(f"Table {table_name} does not exist.")
+            return False
+        columns = []
+        for i in range(record.count()):
+            field_name = record.fieldName(i)
+            columns.append(field_name)
+        return columns
+
+    @staticmethod
+    def is_value_existed(table_name, condition):
+        db = QSqlDatabase.database()
+        query = QSqlQuery(db)
+        sql = f"""
+    SELECT COUNT(*) FROM {table_name}
+    WHERE {list(condition.keys())[0]} = "{list(condition.values())[0]}"
+    """
+        if not query.prepare(sql):
+            error(f"ERROR: {query.lastError().text()}")
+            return False
+        if not exec_query(db, query):
+            return False
+        if query.next():
+            return query.value(0) > 0
+        return False
 
 
 class RETemplateService:
     @staticmethod
     def read(table_name, id, language="vi"):
-        db = QSqlDatabase.database()
+        db = QSqlDatabase.database("re_connection")
         query = QSqlQuery(db)
         sql = f"""
         SELECT 
@@ -459,7 +502,7 @@ class RETemplateService:
         WHERE main.id = :id
         """
         if not query.prepare(sql):
-            logger.error(query.lastError().text())
+            error(query.lastError().text())
             return False
         query.bindValue(":id", id)
         if not exec_query(db, query):
@@ -473,7 +516,7 @@ class RETemplateService:
 
     @staticmethod
     def read_all(table_name, language="vi"):
-        db = QSqlDatabase.database()
+        db = QSqlDatabase.database("re_connection")
         query = QSqlQuery(db)
         sql = f"""
         SELECT 
@@ -488,7 +531,7 @@ class RETemplateService:
         JOIN {constants.RE_SETTING_OPTIONS_TABLE} options ON main.option_id = options.id
         """
         if not query.prepare(sql):
-            logger.error(query.lastError().text())
+            error(query.lastError().text())
             return False
         if not exec_query(db, query):
             return []
@@ -500,42 +543,9 @@ class RETemplateService:
             results.append(row)
         return results
 
-    # def read_all(table_name, condition=None, language="vi"):
-    #     db = QSqlDatabase.database()
-    #     query = QSqlQuery(db)
-    #     if condition:
-    #         condition_key = condition.keys()[0]
-    #         condition_value = condition.values()[0]
-    #         where_sql = f"WHERE '{condition_key}' = '{condition_value}'"
-    #     sql = f"""
-    #     SELECT
-    #         main.id AS id,
-    #         main.tid AS tid,
-    #         options.id AS option_id,
-    #         {"options.label_vi AS option_label" if language == "vi" else "options.label_en AS option_label"},
-    #         options.value AS option_value,
-    #         main.value AS value,
-    #         main.updated_at AS updated_at
-    #     FROM {table_name} main
-    #     JOIN {constants.RE_SETTING_OPTIONS_TABLE} options ON main.option_id = options.id
-    #     {where_sql if condition else ""}
-    #     """
-    #     if not query.prepare(sql):
-    #         logger.error(query.lastError().text())
-    #         return False
-    #     if not exec_query(db, query):
-    #         return []
-    #     results = []
-    #     while query.next():
-    #         row = {}
-    #         for i in range(query.record().count()):
-    #             row[query.record().fieldName(i)] = query.value(i)
-    #         results.append(row)
-    #     return results
-
     @staticmethod
     def get_ids_by_condition(table_name, condition):
-        db = QSqlDatabase.database()
+        db = QSqlDatabase.database("re_connection")
         query = QSqlQuery(db)
         query.prepare(
             f"""
@@ -554,9 +564,9 @@ class RETemplateService:
 
     @staticmethod
     def create(table_name, payload):
-        db = QSqlDatabase.database()
+        db = QSqlDatabase.database("re_connection")
         if not db.transaction():
-            logger.error("Failed to start transaction.")
+            error("Failed to start transaction.")
             return False
         try:
             sql = f"""
@@ -565,7 +575,7 @@ class RETemplateService:
             """
             query = QSqlQuery(db)
             if not query.prepare(sql):
-                logger.error(query.lastError().text())
+                error(query.lastError().text())
                 return False
             for key, value in payload.items():
                 query.bindValue(f":{key}", value)
@@ -578,17 +588,18 @@ class RETemplateService:
             return True
         except Exception as e:
             db.rollback()
-            logger.error(f"ERROR: {e}", exc_info=True)
+            error(f"ERROR: {e}")
             return False
 
     @staticmethod
     def update(table_name, id, payload):
-        db = QSqlDatabase.database()
+        db = QSqlDatabase.database("re_connection")
         if not db.transaction():
-            logger.error("Failed to start transaction.")
+            error("Failed to start transaction.")
             return False
         try:
-            set_clause = ", ".join([f"{key} = :{key}" for key in payload.keys()])
+            set_clause = ", ".join(
+                [f"{key} = :{key}" for key in payload.keys()])
             sql = f"""
             UPDATE {table_name}
             SET {set_clause}, updated_at = (strftime('%Y-%m-%d %H:%M:%S', 'now'))
@@ -596,7 +607,7 @@ class RETemplateService:
             """
             query = QSqlQuery(db)
             if not query.prepare(sql):
-                logger.error(query.lastError().text())
+                error(query.lastError().text())
                 return False
             query.bindValue(":id", id)
             for key, value in payload.items():
@@ -609,14 +620,14 @@ class RETemplateService:
             return True
         except Exception as e:
             db.rollback()
-            logger.error(f"ERROR: {e}", exc_info=True)
+            error(f"ERROR: {e}")
             return False
 
     @staticmethod
     def delete(table_name, id):
-        db = QSqlDatabase.database()
+        db = QSqlDatabase.database("re_connection")
         if not db.transaction():
-            logger.error("Failed to start transaction.")
+            error("Failed to start transaction.")
             return False
         try:
             query = QSqlQuery(db)
@@ -624,7 +635,7 @@ class RETemplateService:
             DELETE FROM {table_name} WHERE id = :id
             """
             if not query.prepare(sql):
-                logger.error(query.lastError().text())
+                error(query.lastError().text())
                 return False
             query.bindValue(":id", id)
             if not exec_query(db, query):
@@ -635,14 +646,31 @@ class RETemplateService:
             return True
         except Exception as e:
             db.rollback()
-            logger.error(f"ERROR: {e}", exc_info=True)
+            error(f"ERROR: {e}")
             return False
+
+    @staticmethod
+    def is_value_existed(table_name, condition):
+        db = QSqlDatabase.database()
+        query = QSqlQuery(db)
+        sql = f"""
+    SELECT COUNT(*) FROM {table_name}
+    WHERE {list(condition.keys())[0]} = "{list(condition.values())[0]}"
+    """
+        if not query.prepare(sql):
+            error(f"ERROR: {query.lastError().text()}")
+            return False
+        if not exec_query(db, query):
+            return False
+        if query.next():
+            return query.value(0) > 0
+        return False
 
 
 class REImageDirService:
     @staticmethod
     def read(condition):
-        db = QSqlDatabase.database()
+        db = QSqlDatabase.database("re_connection")
         query = QSqlQuery(db)
         sql = f"""
         SELECT 
@@ -651,7 +679,7 @@ class REImageDirService:
         WHERE {list(condition.keys())[0]} = {list(condition.values())[0]}
         """
         if not query.prepare(sql):
-            logger.error(query.lastError().text())
+            error(query.lastError().text())
             return False
         # query.bindValue(":id", condition)
         if not exec_query(db, query):
@@ -665,7 +693,7 @@ class REImageDirService:
 
     @staticmethod
     def read_all():
-        db = QSqlDatabase.database()
+        db = QSqlDatabase.database("re_connection")
         query = QSqlQuery(db)
         sql = f"""
         SELECT 
@@ -673,7 +701,7 @@ class REImageDirService:
         FROM {constants.RE_SETTING_IMG_DIR_TABLE}
         """
         if not query.prepare(sql):
-            logger.error(query.lastError().text())
+            error(query.lastError().text())
             return False
         if not exec_query(db, query):
             return []
@@ -687,9 +715,9 @@ class REImageDirService:
 
     @staticmethod
     def create(payload):
-        db = QSqlDatabase.database()
+        db = QSqlDatabase.database("re_connection")
         if not db.transaction():
-            logger.error("Failed to start transaction.")
+            error("Failed to start transaction.")
             return False
         try:
             sql = f"""
@@ -698,7 +726,7 @@ class REImageDirService:
             """
             query = QSqlQuery(db)
             if not query.prepare(sql):
-                logger.error(query.lastError().text())
+                error(query.lastError().text())
                 return False
             for key, value in payload.items():
                 query.bindValue(f":{key}", value)
@@ -711,17 +739,18 @@ class REImageDirService:
             return True
         except Exception as e:
             db.rollback()
-            logger.error(f"ERROR: {e}", exc_info=True)
+            error(f"ERROR: {e}")
             return False
 
     @staticmethod
     def update(id, payload):
-        db = QSqlDatabase.database()
+        db = QSqlDatabase.database("re_connection")
         if not db.transaction():
-            logger.error("Failed to start transaction.")
+            error("Failed to start transaction.")
             return False
         try:
-            set_clause = ", ".join([f"{key} = :{key}" for key in payload.keys()])
+            set_clause = ", ".join(
+                [f"{key} = :{key}" for key in payload.keys()])
             sql = f"""
             UPDATE {constants.RE_SETTING_IMG_DIR_TABLE}
             SET {set_clause}, updated_at = (strftime('%Y-%m-%d %H:%M:%S', 'now'))
@@ -729,7 +758,7 @@ class REImageDirService:
             """
             query = QSqlQuery(db)
             if not query.prepare(sql):
-                logger.error(query.lastError().text())
+                error(query.lastError().text())
                 return False
             query.bindValue(":id", id)
             for key, value in payload.items():
@@ -742,14 +771,14 @@ class REImageDirService:
             return True
         except Exception as e:
             db.rollback()
-            logger.error(f"ERROR: {e}", exc_info=True)
+            error(f"ERROR: {e}")
             return False
 
     @staticmethod
     def delete(record_id):
-        db = QSqlDatabase.database()
+        db = QSqlDatabase.database("re_connection")
         if not db.transaction():
-            logger.error("Failed to start transaction.")
+            error("Failed to start transaction.")
             return False
         try:
             query = QSqlQuery(db)
@@ -757,7 +786,7 @@ class REImageDirService:
             DELETE FROM {constants.RE_SETTING_IMG_DIR_TABLE} WHERE id = :id
             """
             if not query.prepare(sql):
-                logger.error(query.lastError().text())
+                error(query.lastError().text())
                 return False
             query.bindValue(":id", record_id)
             if not exec_query(db, query):
@@ -768,5 +797,5 @@ class REImageDirService:
             return True
         except Exception as e:
             db.rollback()
-            logger.error(f"ERROR: {e}", exc_info=True)
+            error(f"ERROR: {e}")
             return False

@@ -1,16 +1,13 @@
-# src/services/re_service_utils.py
+# src/services/service_utils.py
 from PyQt6.QtSql import QSqlDatabase, QSqlQuery
-import logging
+from src.utils.logger import error, warning, info
 import os
 import shutil
-
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.INFO)
 
 
 def commit_db(db):
     if not db.commit():
-        logger.error("Failed to commit transaction.")
+        error("Failed to commit transaction.")
         return False
     return True
 
@@ -19,7 +16,7 @@ def exec_query(db, query):
     sql = query.lastQuery()
     if not query.exec():
         print("Query bound names:", query.boundValues())
-        logger.error(
+        error(
             f"Error executing SQL query: {sql}\nERROR message: {query.lastError().text()}"
         )
         db.rollback()
@@ -47,32 +44,13 @@ SELECT COUNT(*) FROM {table_name}
 WHERE {list(condition.keys())[0]} = "{list(condition.values())[0]}"
 """
     if not query.prepare(sql):
-        logger.error(f"ERROR: {query.lastError().text()}", exc_info=True)
+        error(f"ERROR: {query.lastError().text()}")
         return False
     if not exec_query(db, query):
         return False
     if query.next():
         return query.value(0) > 0
     return False
-
-
-# except Exception as e:
-#     db.rollback()
-#     logger.error(f"ERROR: {e}", exc_info=True)
-#     return False
-
-
-def get_columns(table_name):
-    db = QSqlDatabase.database()
-    record = db.record(table_name)
-    if record.isEmpty():
-        print(f"Table {table_name} does not exist.")
-        return False
-    columns = []
-    for i in range(record.count()):
-        field_name = record.fieldName(i)
-        columns.append(field_name)
-    return columns
 
 
 def get_ids(table_name, condition=None):
@@ -87,7 +65,7 @@ SELECT id FROM {table_name}
 SELECT id FROM {table_name} WHERE {list(condition.keys())[0]} = {list(condition.values())[0]}
 """
     if not query.prepare(sql):
-        logger.error(query.lastError().text())
+        error(query.lastError().text())
         return False
     if not exec_query(db, query):
         return []
@@ -124,3 +102,17 @@ def get_images_in_directory(image_dir):
         if file.endswith((".png", ".jpg", ".jpeg")):
             images.append(os.path.join(image_dir, file))
     return images
+
+
+def delete_dir(dir_path):
+    dir_path = os.path.abspath(dir_path)
+    if not os.path.exists(dir_path):
+        warning(f"directory '{dir_path}' does not exist.".lower())
+        return True
+    try:
+        shutil.rmtree(dir_path)
+        info(f"successfully deleted directory: '{dir_path}'".lower())
+        return True
+    except OSError as e:
+        error(f"error deleting directory '{dir_path}': {e}".lower())
+        return False

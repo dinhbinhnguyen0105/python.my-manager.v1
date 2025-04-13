@@ -78,7 +78,6 @@ class REProductController(QObject):
             if len(payload.get("image_paths")) < 1:
                 QMessageBox.critical(None, "Error", "Invalid images.")
                 return False
-            print("passed!")
             if REProductService.create(payload):
                 self.model.select()
                 QMessageBox.information(
@@ -160,15 +159,100 @@ class REProductController(QObject):
 
     @staticmethod
     def get_columns():
-        return re_controller_utils.get_columns()
+        return RESettingService.get_columns()
 
     @staticmethod
     def generate_pid(option):
-        return re_controller_utils.generate_pid(option)
+        try:
+            while True:
+                uuid_str = str(uuid.uuid4())
+                pid = uuid_str.replace("-", "")[:8]
+                if option.lower() == "sell":
+                    pid = "S." + pid
+                elif option.lower() == "rent":
+                    pid = "R." + pid
+                elif option.lower() == "assignment":
+                    pid = "A." + pid
+                else:
+                    raise ValueError("Invalid option")
+                pid = ("RE." + pid).lower()
+                if not REProductService.is_value_existed(
+                    constants.RE_PRODUCT_TABLE, {"pid": pid}
+                ):
+                    return pid
+                else:
+                    continue
+        except Exception as e:
+            QMessageBox.critical(None, "Error", str(e))
+            raise Exception("Failed to generate PID.")
 
     @staticmethod
     def validate_new_product(fields):
-        return re_controller_utils.validate_new_product(fields)
+        if not fields.get("pid") or REProductService.is_value_existed(constants.RE_PRODUCT_TABLE, {"pid": fields.get("pid")}):
+            QMessageBox.critical(None, "Error", "Invalid pid.")
+            return False
+        if (
+            not isinstance(fields.get("area"), (int, float))
+            or not isinstance(fields.get("structure"), (int, float))
+            or not isinstance(fields.get("price"), (int, float))
+        ):
+            QMessageBox.critical(
+                None, "Error", "Area, structure, and price must be numbers."
+            )
+            return False
+        if not REProductService.is_value_existed(
+            constants.RE_SETTING_STATUSES_TABLE, {
+                "id": fields.get("status_id")}
+        ):
+            QMessageBox.critical(None, "Error", "Invalid status selected.")
+            return False
+        if not REProductService.is_value_existed(
+            constants.RE_SETTING_PROVINCES_TABLE, {
+                "id": fields.get("province_id")}
+        ):
+            QMessageBox.critical(None, "Error", "Invalid province selected.")
+            return False
+        if not REProductService.is_value_existed(
+            constants.RE_SETTING_DISTRICTS_TABLE, {
+                "id": fields.get("district_id")}
+        ):
+            QMessageBox.critical(None, "Error", "Invalid district selected.")
+            return False
+        if not REProductService.is_value_existed(
+            constants.RE_SETTING_WARDS_TABLE, {"id": fields.get("ward_id")}
+        ):
+            QMessageBox.critical(None, "Error", "Invalid ward selected.")
+            return False
+        if not REProductService.is_value_existed(
+            constants.RE_SETTING_OPTIONS_TABLE, {"id": fields.get("option_id")}
+        ):
+            QMessageBox.critical(None, "Error", "Invalid option selected.")
+            return False
+        if not REProductService.is_value_existed(
+            constants.RE_SETTING_CATEGORIES_TABLE, {
+                "id": fields.get("category_id")}
+        ):
+            QMessageBox.critical(None, "Error", "Invalid category selected.")
+            return False
+        if not REProductService.is_value_existed(
+            constants.RE_SETTING_BUILDING_LINE_S_TABLE,
+            {"id": fields.get("building_line_id")},
+        ):
+            QMessageBox.critical(
+                None, "Error", "Invalid building_line selected.")
+            return False
+        if not REProductService.is_value_existed(
+            constants.RE_SETTING_FURNITURE_S_TABLE,
+            {"id": fields.get("furniture_id")},
+        ):
+            QMessageBox.critical(None, "Error", "Invalid furniture selected.")
+            return False
+        if not REProductService.is_value_existed(
+            constants.RE_SETTING_LEGAL_S_TABLE, {"id": fields.get("legal_id")}
+        ):
+            QMessageBox.critical(None, "Error", "Invalid legal selected.")
+            return False
+        return True
 
 
 class RESettingController(QObject):
@@ -313,7 +397,21 @@ class RETemplateController(QObject):
             return []
 
     def generate_tid(self):
-        return re_controller_utils.generate_tid(self.table_name)
+        try:
+            while True:
+                uuid_str = str(uuid.uuid4())
+                tid = uuid_str.replace("-", "")[:8]
+                if self.table_name == constants.RE_TEMPLATE_TITLE_TABLE:
+                    tid = "T.T." + tid
+                elif self.table_name == constants.RE_TEMPLATE_DESCRIPTION_TABLE:
+                    tid = "T.D." + tid
+                if not RETemplateService.is_value_existed(self.table_name, {"tid": tid}):
+                    return tid
+                else:
+                    continue
+        except Exception as e:
+            QMessageBox.critical(None, "Error", str(e))
+            raise Exception("Failed to generate TID.")
 
     def get_ids_by_condition(self, condition):
         return RETemplateService.get_ids_by_condition(self.table_name, condition)

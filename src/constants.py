@@ -1,7 +1,9 @@
 import os
 
-PATH_DB = os.path.join("src", "data", "real_estate.db")
+PATH_RE_DB = os.path.join("src", "data", "real_estate.db")
+PATH_USER_DB = os.path.join("src", "data", "user.db")
 RE_PRODUCT_TABLE = "rep_table"
+USER_TABLE = "user_table"
 
 RE_SETTING_STATUSES_TABLE = "re_setting_statuses_table"
 RE_SETTING_PROVINCES_TABLE = "re_setting_provinces_table"
@@ -16,6 +18,9 @@ RE_SETTING_IMG_DIR_TABLE = "re_setting_img_dir_table"
 RE_TEMPLATE_TITLE_TABLE = "re_template_title_table"
 RE_TEMPLATE_DESCRIPTION_TABLE = "re_template_description_table"
 
+USER_ACTION_INTERACTION_TABLE = "user_action_interaction_table"
+USER_SETTING_USER_DATA_DIR_TABLE = "user_setting_user_data_dir_table"
+USER_SETTING_PROXY_TABLE = "user_setting_proxy_table"
 ICONS = [
     "🌼",
     "🌸",
@@ -295,3 +300,7 @@ RE_PRODUCT_INIT_VALUE = {
     "description": "",
     "price": 0.0,
 }
+
+USER_SETTING_USER_DATA_DIR = [
+    {"value": os.path.join("repositories", "users", "user_data_dir")}
+]

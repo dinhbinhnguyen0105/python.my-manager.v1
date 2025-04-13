@@ -2,21 +2,20 @@
 import logging
 from PyQt6.QtSql import QSqlDatabase, QSqlQuery
 from src import constants
-
-logger = logging.getLogger(__name__)
+from src.utils.logger import error
 
 
 def initialize_re_db():
-    db = QSqlDatabase.addDatabase("QSQLITE")
-    db.setDatabaseName(constants.PATH_DB)
+    db = QSqlDatabase.addDatabase("QSQLITE", "re_connection")
+    db.setDatabaseName(constants.PATH_RE_DB)
     if not db.open():
-        logger.error(f"Error opening database: {db.lastError().text()}")
+        error(f"Error opening database: {db.lastError().text()}")
         return False
     query = QSqlQuery(db)
     query.exec("PRAGMA foreign_keys = ON;")
     try:
         if not db.transaction():
-            logger.error("Could not start transaction.")
+            error("Could not start transaction.")
             return False
 
         if not _create_tables(db):
@@ -27,14 +26,14 @@ def initialize_re_db():
             return False
 
         if not db.commit():
-            logger.error("Commit failed")
+            error("Commit failed")
             return False
         return True
     except Exception as e:
         if db.isOpen():
             db.rollback()
-        logger.error(
-            f"Database initialization failed: {str(e)}", exc_info=True)
+        error(
+            f"Database initialization failed: {str(e)}")
         return False
 
 
@@ -143,7 +142,7 @@ FOREIGN KEY (legal_id) REFERENCES {constants.RE_SETTING_LEGAL_S_TABLE}(id)
 )
 """
     if not query.exec(sql):
-        logger.error(
+        error(
             f"Error creating table '{constants.RE_PRODUCT_TABLE}': {query.lastError().text()}"
         )
         return False
@@ -168,7 +167,7 @@ CREATE TABLE IF NOT EXISTS {table_name} (
 )
 """
         if not query.exec(sql):
-            logger.error(
+            error(
                 f"Error creating table '{table_name}': {query.lastError().text()}"
             )
             return False
@@ -188,7 +187,7 @@ created_at TEXT DEFAULT (strftime('%Y-%m-%d %H:%M:%S', 'now'))
 )
 """
     if not query.exec(sql):
-        logger.error(
+        error(
             f"Error creating table '{table_name}': {query.lastError().text()}")
         return False
     return True
@@ -206,7 +205,7 @@ created_at TEXT DEFAULT (strftime('%Y-%m-%d %H:%M:%S', 'now'))
 )
 """
     if not query.exec(sql):
-        logger.error(
+        error(
             f"Error creating table '{constants.RE_SETTING_IMG_DIR_TABLE}': {query.lastError().text()}"
         )
         return False
@@ -220,7 +219,7 @@ INSERT OR IGNORE INTO {constants.RE_SETTING_IMG_DIR_TABLE} (id, value, is_select
 VALUES(0, "{constants.RE_SETTING_IMG_DIR[0].get("value")}", 1)
 """
     if not query.exec(sql):
-        logger.error(
+        error(
             f"Error seeding table '{constants.RE_SETTING_IMG_DIR_TABLE}': {query.lastError().text()}"
         )
         return False
@@ -234,7 +233,7 @@ INSERT OR IGNORE INTO {constants.RE_TEMPLATE_TITLE_TABLE} (id, tid, option_id, v
 VALUES (:id, :tid, :option_id, :value)
 """
     if not query.prepare(sql):
-        logger.error(query.lastError().text())
+        error(query.lastError().text())
         return False
     query.bindValue(":id", 0)
     query.bindValue(":tid", "T.T.default")
@@ -244,7 +243,7 @@ VALUES (:id, :tid, :option_id, :value)
         "[<option>] <icon><icon> cần <option> <category> <price> <unit>, <ward>, <district>, <province> <icon><icon>",
     )
     if not query.exec():
-        logger.error(
+        error(
             f"Error seeding table '{constants.RE_TEMPLATE_TITLE_TABLE}': {query.lastError().text()}"
         )
         return False
@@ -258,7 +257,7 @@ INSERT OR IGNORE INTO {constants.RE_TEMPLATE_DESCRIPTION_TABLE} (id, tid, option
 VALUES (:id, :tid, :option_id, :value)
 """
     if not query.prepare(sql):
-        logger.error(query.lastError().text())
+        error(query.lastError().text())
         return False
     query.bindValue(":id", 0)
     query.bindValue(":tid", "T.D.default")
@@ -268,7 +267,7 @@ VALUES (:id, :tid, :option_id, :value)
         "ID: <PID>\n🗺 Vị trí: đường <street>, <ward>, <district>\n📏 Diện tích: <area>\n🏗 Kết cấu: <structure>\n🛌 Công năng: <function>\n📺 Nội thất: <furniture>\n🚗 Lộ giới: <building_line>\n📜 Pháp lý: <legal>\n<icon><icon> Mô tả:\n<description>\n------------\n💵 Giá: <price><unit>- Thương lượng chính chủ\n\n☎ Liên hệ: 0375.155.525 - Mr. Bình\n🌺🌺🌺🌺🌺🌺🌺🌺🌺🌺🌺🌺🌺\n🌺Ký gửi mua, bán - cho thuê, thuê bất động sản xin liên hệ 0375.155.525 - Mr. Bình🌺\n🌺🌺🌺🌺🌺🌺🌺🌺🌺🌺🌺🌺🌺",
     )
     if not query.exec():
-        logger.error(
+        error(
             f"Error seeding table '{constants.RE_TEMPLATE_DESCRIPTION_TABLE}': {query.lastError().text()}"
         )
         return False
@@ -282,7 +281,7 @@ INSERT OR IGNORE INTO {table_name} (id, label_vi, label_en, value)
 VALUES (:id, :label_vi, :label_en, :value)
 """
     if not query.prepare(sql):
-        logger.error(query.lastError().text())
+        error(query.lastError().text())
         return False
     for index, field in enumerate(payload):
         query.bindValue(":id", index)
@@ -290,7 +289,7 @@ VALUES (:id, :label_vi, :label_en, :value)
         query.bindValue(":label_en", field.get("label_en", ""))
         query.bindValue(":value", field.get("value", ""))
         if not query.exec():
-            logger.error(
+            error(
                 f"Error inserting into '{table_name}': {query.lastError().text()}"
             )
             return False
