@@ -36,23 +36,6 @@ def is_affected(query):
         return False
 
 
-def is_value_existed(table_name, condition):
-    db = QSqlDatabase.database()
-    query = QSqlQuery(db)
-    sql = f"""
-SELECT COUNT(*) FROM {table_name}
-WHERE {list(condition.keys())[0]} = "{list(condition.values())[0]}"
-"""
-    if not query.prepare(sql):
-        error(f"ERROR: {query.lastError().text()}")
-        return False
-    if not exec_query(db, query):
-        return False
-    if query.next():
-        return query.value(0) > 0
-    return False
-
-
 def get_ids(table_name, condition=None):
     db = QSqlDatabase.database()
     query = QSqlQuery(db)

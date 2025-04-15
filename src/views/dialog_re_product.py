@@ -70,7 +70,6 @@ class DialogREProduct(QDialog, Ui_Dialog_REProduct):
         self.accept()
 
     def _initialize_option_radios(self):
-        """Khởi tạo trạng thái và kết nối tín hiệu cho các radio button tùy chọn."""
         self.controller_settings = RESettingController(
             constants.RE_SETTING_OPTIONS_TABLE)
         options = self.controller_settings.read_all()
